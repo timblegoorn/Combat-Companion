@@ -8,6 +8,8 @@ var units = [
 
 var currentRound = 1;
 
+var searchBar, searchResults;
+
 function DisplayUnits() {
   units.sort((a,b) => b.initiative - a.initiative);
   // Get the object list div
@@ -69,5 +71,14 @@ function LoadGame() {
     DisplayUnits();
 }
 
+function Init() {
+  DisplayUnits();
+
+  searchResults = document.getElementById("searchResults");
+  searchBar = document.getElementById("monsterName");
+
+  searchBar.addEventListener('input', UpdateSearchResults);
+}
+
 // Call the displayObjectList function when the page loads
-window.addEventListener('load', DisplayUnits);
+window.addEventListener('load', Init);
