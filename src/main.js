@@ -31,15 +31,15 @@ function AddUnit() {
 
   if (isNaN(initiative) || initiative < 0 || initiative == "") {
     console.log("invalid initiative");
-    return;
+    return false;
   }
   if (isNaN(hp) || hp < 0 || hp == "") {
     console.log("invalid hp");
-    return;
+    return false;
   }
   if (name == "") {
     console.log("invalid name");
-    return;
+    return false;
   }
   // Reset the value of the input field
   document.getElementById("itemName").value = "";
@@ -49,6 +49,7 @@ function AddUnit() {
   var obj = {name: name, initiative: initiative, hp: hp};
   units.push(obj);
   DisplayUnits();
+  return false;
 }
 
 function SaveGame() {
