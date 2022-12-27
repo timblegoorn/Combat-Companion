@@ -13,18 +13,32 @@
     </div>
 
     <div class="divBlocks">
-      <p>
-        Add a new unit:
-      </p>
-      <form onsubmit="return AddUnit()">
-        <label for="itemName">Unit Name:</label><br>
-        <input type="text" id="itemName" name="itemName" maxlength="20" placeholder="Barilon Balkak" required autofocus autocomplete="on"><br>
-        <label for="itemInitiative">Initiative:</label><br>
-        <input type="number" id="itemInitiative" name="itemInitiative" required><br>
-        <label for="itemHP">HP:</label><br>
-        <input type="number" id="itemHP" name="itemHP" required><br>
-        <input type="submit" value="Submit">
-      </form> 
+      <div class="flex-container">
+        <div class="divInlineBlocks">
+          Search for a predefined unit:
+          <form onsubmit="return SearchUnit()">
+            <label for="monsterName">Unit Name:</label><br>
+            <input type="text" id="monsterName" name="monsterName" maxlength="30" placeholder="Search any 5E Monsters" required autocomplete="on"><br>
+            <input type="submit" value="Submit">
+          </form> 
+          <div id="searchResults">
+            
+          </div>
+        </div>
+        <div class="divInlineBlocks">
+          Add a custom unit:
+          <br><br>
+          <form onsubmit="return AddUnit()">
+            <label for="itemName">Unit Name:</label><br>
+            <input type="text" id="itemName" name="itemName" maxlength="20" placeholder="Barilon Balkak" required autofocus autocomplete="on"><br>
+            <label for="itemInitiative">Initiative:</label><br>
+            <input type="number" id="itemInitiative" name="itemInitiative" required><br>
+            <label for="itemHP">HP:</label><br>
+            <input type="number" id="itemHP" name="itemHP" required><br>
+            <input type="submit" value="Submit">
+          </form> 
+        </div>
+      </div>
       <button type="button" onclick="SaveGame()">Save Current Combat</button>
       <button type="button" onclick="LoadGame()">Load Saved Combat</button>
     </div>
@@ -33,5 +47,6 @@
   </div>
 
   <script src="src/main.js"></script>
+  <script src="src/requests.js"></script>
 </body>
 </html>
