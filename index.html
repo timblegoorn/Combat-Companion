@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Combat Companion V0.1</title>
+  <link rel="stylesheet" href="style/main.css">
+</head>
+<body>
+
+  
+  <div id="contentContainer">
+    <div id="logoTitle">
+      <h1 class="title">Combat Companion V0.1</h1>
+    </div>
+
+    <div class="divBlocks">
+      <p>
+        Add a new unit:
+      </p>
+      <form>
+        <label for="itemName">Unit Name:</label><br>
+        <input type="text" id="itemName" name="itemName"><br>
+        <label for="itemInitiative">Initiative:</label><br>
+        <input type="text" id="itemInitiative" name="itemInitiative"><br>
+        <label for="itemHP">HP:</label><br>
+        <input type="text" id="itemHP" name="itemHP"><br>
+        <button type="button" onclick="AddUnit()">Add Unit</button>
+        <button type="button" onclick="SaveGame()">Save Current Combat</button>
+        <button type="button" onclick="LoadGame()">Load Saved Combat</button>
+      </form> 
+    </div>
+    <br>
+    <div id="list" class="divBlocks"></div>
+  </div>
+
+  <script src="src/main.js"></script>
+</body>
+</html>

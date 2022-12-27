@@ -1,0 +1,56 @@
+@font-face {
+  font-family: themeFont;
+  src: url(../assets/Blackcastlemf-BG5n.ttf);
+}
+
+@font-face {
+  font-family: iconFont;
+  src: url(../assets/DonjonikonsRegular-VABy.ttf);
+}
+
+:root {
+  --themeRedPop:#e8443c;
+  --themeRedLessPop: #e94445;
+  --themeBlue: #264c5e;
+  --themeRedMuted: #a34c50;
+  --themeOffWhite: #cec2ae;
+  --themeRedDark: #4a2932;
+}
+
+body {
+  background-color: var(--themeOffWhite);
+}
+
+#contentContainer {
+  text-align: center;
+  padding-left: 20%;
+  padding-right: 20%;
+}
+
+.title {
+  font-family: themeFont;
+  color: var(--themeRedPop);
+  font-size: 100px;
+  font-weight: 50;
+}
+
+.divBlocks {
+  display: block;
+  background: white;
+  border-radius: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-radius: 20px;
+}
+
+.unit {
+  padding: 30px;
+  background-color: var(--themeRedDark);
+  margin: 5px;
+  border-radius: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: left;
+  color: var(--themeOffWhite);
+}
