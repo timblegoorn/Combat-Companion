@@ -16,17 +16,17 @@
       <p>
         Add a new unit:
       </p>
-      <form>
+      <form onsubmit="return AddUnit()">
         <label for="itemName">Unit Name:</label><br>
-        <input type="text" id="itemName" name="itemName"><br>
+        <input type="text" id="itemName" name="itemName" maxlength="20" placeholder="Barilon Balkak" required autofocus autocomplete="on"><br>
         <label for="itemInitiative">Initiative:</label><br>
-        <input type="text" id="itemInitiative" name="itemInitiative"><br>
+        <input type="number" id="itemInitiative" name="itemInitiative" required><br>
         <label for="itemHP">HP:</label><br>
-        <input type="text" id="itemHP" name="itemHP"><br>
-        <button type="button" onclick="AddUnit()">Add Unit</button>
-        <button type="button" onclick="SaveGame()">Save Current Combat</button>
-        <button type="button" onclick="LoadGame()">Load Saved Combat</button>
+        <input type="number" id="itemHP" name="itemHP" required><br>
+        <input type="submit" value="Submit">
       </form> 
+      <button type="button" onclick="SaveGame()">Save Current Combat</button>
+      <button type="button" onclick="LoadGame()">Load Saved Combat</button>
     </div>
     <br>
     <div id="list" class="divBlocks"></div>
