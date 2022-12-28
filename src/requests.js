@@ -23,11 +23,18 @@ function DisplaySearchResults() {
   for (const monster of monsterList) {
     const listItem = document.createElement('div');
     listItem.className = "unit";
+    listItem.id = `${monster.slug}`;
     listItem.innerHTML = `${monster.name}`;
+    listItem.onclick = function() {ClickSearchedItem(this.id);};
     searchResults.appendChild(listItem);
   }
 
 
 
   //searchResults.textContent = monsterList.length;
+}
+
+function ClickSearchedItem(id) {
+  var foundMonster = monsterList.find((monster) => monster.slug === id);
+  console.log(foundMonster);
 }
