@@ -27,14 +27,18 @@
         </div>
         <div class="divInlineBlocks">
           Add a custom unit:
+          <br>
+          <i>*denotes required.</i>
           <br><br>
           <form onsubmit="return AddUnit()">
-            <label for="itemName">Unit Name:</label><br>
+            <label for="itemName">Unit Name*:</label><br>
             <input type="text" id="itemName" name="itemName" maxlength="20" placeholder="Barilon Balkak" required autofocus autocomplete="on"><br>
-            <label for="itemInitiative">Initiative:</label><br>
-            <input type="number" id="itemInitiative" name="itemInitiative" required><br>
-            <label for="itemHP">HP:</label><br>
+            <label for="itemHP">HP*:</label><br>
             <input type="number" id="itemHP" name="itemHP" required><br>
+            <label for="itemInitiative">Initiative:</label><br>
+            <input type="number" id="itemInitiative" name="itemInitiative" placeholder="Ignore for Random Roll"><br>
+            <label for="itemAC">AC:</label><br>
+            <input type="number" id="itemAC" name="itemAC"><br>
             <input type="submit" value="Submit">
           </form> 
         </div>

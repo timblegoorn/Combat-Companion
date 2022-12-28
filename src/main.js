@@ -30,10 +30,10 @@ function AddUnit() {
   var name = document.getElementById("itemName").value;
   var initiative = document.getElementById("itemInitiative").value;
   var hp = document.getElementById("itemHP").value;
+  var ac = document.getElementById("itemAC").value;
 
   if (isNaN(initiative) || initiative < 0 || initiative == "") {
-    console.log("invalid initiative");
-    return false;
+    initiative = Math.floor(Math.random() * 20) + 1;
   }
   if (isNaN(hp) || hp < 0 || hp == "") {
     console.log("invalid hp");
@@ -47,8 +47,9 @@ function AddUnit() {
   document.getElementById("itemName").value = "";
   document.getElementById("itemInitiative").value = "";
   document.getElementById("itemHP").value = "";
+  document.getElementById("itemAC").value = "";
 
-  var obj = {name: name, initiative: initiative, hp: hp};
+  var obj = {name: name, initiative: initiative, hp: hp, ac:ac};
   units.push(obj);
   DisplayUnits();
   return false;
