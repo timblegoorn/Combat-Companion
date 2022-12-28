@@ -10,7 +10,11 @@ async function getMonstersByName(string) {
 }
 
 function UpdateSearchResults(e) {
-    getMonstersByName(e.target.value);
+    if (e.target.value.length > 0) {
+        getMonstersByName(e.target.value);
+    } else {
+        searchResults.innerHTML = "";
+    }
 }
 
 function DisplaySearchResults() {
