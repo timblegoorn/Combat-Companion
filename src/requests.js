@@ -36,5 +36,9 @@ function DisplaySearchResults() {
 
 function ClickSearchedItem(id) {
   var foundMonster = monsterList.find((monster) => monster.slug === id);
-  console.log(foundMonster);
+
+  if (foundMonster != undefined) {
+    RenderEditableStatBlock(foundMonster);
+  }
+  //console.log(foundMonster);
 }
