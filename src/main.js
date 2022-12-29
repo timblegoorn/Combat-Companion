@@ -345,7 +345,45 @@ function RenderEditableStatBlock(statblock) {
     <div class="section-left">
       <div class="creature-heading">
         <h1><input class="h1Input" type="text" id="statblockName" name="statblockName" maxlength="40" value="${statblock.name}"></h1>
-        <h2>${statblock.size} ${statblock.type}, ${statblock.alignment}</h2>
+        <h2>
+          <select class="statblockSelect italic" name="statblockSize" id="statblockSize">
+            <option value="Tiny">Tiny</option>
+            <option value="Small">Small</option>
+            <option value="Medium">Medium</option>
+            <option value="Large">Large</option>
+            <option value="Huge">Huge</option>
+            <option value="Gargantuan">Gargantuan</option>
+            <option value="Colossal">Colossal</option>
+          </select>
+          <select class="statblockSelect italic" name="statblockType" id="statblockType">
+            <option value="aberration">aberration</option>
+            <option value="beast">beast</option>
+            <option value="celestial">celestial</option>
+            <option value="construct">construct</option>
+            <option value="dragon">dragon</option>
+            <option value="elemental">elemental</option>
+            <option value="fey">fey</option>
+            <option value="fiend">fiend</option>
+            <option value="giant">giant</option>
+            <option value="humanoid">humanoid</option>
+            <option value="monstrosity">monstrosity</option>
+            <option value="ooze">ooze</option>
+            <option value="plant">plant</option>
+            <option value="undead">undead</option>
+          </select>
+          <select class="statblockSelect italic" name="statblockAlignment" id="statblockAlignment">
+            <option value="lawful good">lawful good</option>
+            <option value="neutral good">neutral good</option>
+            <option value="chaotic good">chaotic good</option>
+            <option value="lawful neutral">lawful neutral</option>
+            <option value="true neutral">true neutral</option>
+            <option value="chaotic neutral">chaotic neutral</option>
+            <option value="lawful evil">lawful evil</option>
+            <option value="neutral evil">neutral evil</option>
+            <option value="chaotic evil">chaotic evil</option>
+            <option value="unaligned">unaligned</option>
+          </select>
+        </h2>
       </div> <!-- creature heading -->
       <svg height="5" width="100%" class="tapered-rule">
         <polyline points="0,0 400,2.5 0,5"></polyline>
@@ -543,6 +581,9 @@ function RenderEditableStatBlock(statblock) {
 
 
   document.getElementById('searchResults').innerHTML = str;  
+  document.getElementById("statblockSize").value = statblock.size;
+  document.getElementById("statblockType").value = statblock.type;
+  document.getElementById("statblockAlignment").value = statblock.alignment;
 }
 
 // Statblock HTML template and CSS provided from: https://codepen.io/retractedhack/pen/gPLpWe

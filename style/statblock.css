@@ -29,6 +29,20 @@ body {
     border: 1px dotted black;
 }
 
+.statblockSelect {
+  background-color: #FDF1DC;
+  border: 1px dotted black;
+  width: min-content;
+}
+
+.statblockTextInput {
+
+}
+
+.italic {
+  font-style: italic;
+}
+
   .stat-block {
     text-align: left;
     margin: 20px;
