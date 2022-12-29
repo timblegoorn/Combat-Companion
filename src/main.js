@@ -337,6 +337,7 @@ challengeRatingXPTable = {
   "30": 155000,
 }
 
+// Statblock HTML template and CSS provided from: https://codepen.io/retractedhack/pen/gPLpWe
 function RenderEditableStatBlock(statblock) {
   var str = `
   <div class="stat-block">
@@ -525,7 +526,7 @@ function RenderEditableStatBlock(statblock) {
           <div class="property-block">
             <p>${statblock.legendary_desc}.</p>
           </div> <!-- property block -->`;
-      for (let action of statblock.actions) {
+      for (let action of statblock.legendary_actions) {
         str+= `
         <div class="property-block">
           <h4>${action.name}.</h4>
@@ -534,7 +535,7 @@ function RenderEditableStatBlock(statblock) {
       }
       str += `
         </div> <!-- legendary actions -->`
-    }   
+    } 
         str += `
     </div> <!-- section right -->
     <hr class="orange-border bottom" />
@@ -544,6 +545,7 @@ function RenderEditableStatBlock(statblock) {
   document.getElementById('searchResults').innerHTML = str;  
 }
 
+// Statblock HTML template and CSS provided from: https://codepen.io/retractedhack/pen/gPLpWe
 function RenderStatBlock(statblock) {
   var str = `
   <div class="stat-block">
