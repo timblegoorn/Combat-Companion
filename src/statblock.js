@@ -111,7 +111,7 @@ abilityModifierTable = [
     // Iterate through speed string
     for (const speedType in statblock.speed) {
       if (speedType == 'walk') {
-        str += `${statblock.speed[speedType]} ft.n`;
+        str += `${statblock.speed[speedType]} ft. `;
       }
       else {
         str += `${speedType} ${statblock.speed[speedType]} ft.`;
