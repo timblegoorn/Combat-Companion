@@ -337,13 +337,13 @@ challengeRatingXPTable = {
   "30": 155000,
 }
 
-function RenderStatBlock(statblock) {
+function RenderEditableStatBlock(statblock) {
   var str = `
   <div class="stat-block">
     <hr class="orange-border" />
     <div class="section-left">
       <div class="creature-heading">
-        <h1>${statblock.name}</h1>
+        <h1><input class="h1Input" type="text" id="statblockName" name="statblockName" maxlength="40" value="${statblock.name}"></h1>
         <h2>${statblock.size} ${statblock.type}, ${statblock.alignment}</h2>
       </div> <!-- creature heading -->
       <svg height="5" width="100%" class="tapered-rule">
@@ -363,12 +363,12 @@ function RenderStatBlock(statblock) {
           <p>`
   
   // Iterate through speed string
-  for (const speedType of statblock.speed) {
+  for (const speedType in statblock.speed) {
     if (speedType == 'walk') {
-      str += `${statblock.speed[speedType] ft.}`;
+      str += `${statblock.speed[speedType]} ft.n`;
     }
     else {
-      str += `${speedType} ${statblock.speed[speedType] ft.}`;
+      str += `${speedType} ${statblock.speed[speedType]} ft.`;
     }
   }
 
@@ -473,7 +473,7 @@ function RenderStatBlock(statblock) {
         str+= `
         <div class="property-line first">
           <h4>Languages</h4>
-          <p>&mdash</p>
+          <p>&mdash;</p>
         </div> <!-- property line -->`        
       }
 
@@ -539,6 +539,216 @@ function RenderStatBlock(statblock) {
     </div> <!-- section right -->
     <hr class="orange-border bottom" />
   </div> <!-- stat block -->`;
+
+
+  document.getElementById('searchResults').innerHTML = str;  
+}
+
+function RenderStatBlock(statblock) {
+  var str = `
+  <div class="stat-block">
+    <hr class="orange-border" />
+    <div class="section-left">
+      <div class="creature-heading">
+        <h1>${statblock.name}</h1>
+        <h2>${statblock.size} ${statblock.type}, ${statblock.alignment}</h2>
+      </div> <!-- creature heading -->
+      <svg height="5" width="100%" class="tapered-rule">
+        <polyline points="0,0 400,2.5 0,5"></polyline>
+      </svg>
+      <div class="top-stats">
+        <div class="property-line first">
+          <h4>Armor Class</h4>
+          <p>${statblock.armor_class} (${statblock.armor_desc})</p>
+        </div> <!-- property line -->
+        <div class="property-line">
+          <h4>Hit Points</h4>
+          <p>${statblock.hit_points} (${statblock.hit_dice})</p>
+        </div> <!-- property line -->
+        <div class="property-line last">
+          <h4>Speed</h4>
+          <p>`
+  
+  // Iterate through speed string
+  for (const speedType in statblock.speed) {
+    if (speedType == 'walk') {
+      str += `${statblock.speed[speedType]} ft.n`;
+    }
+    else {
+      str += `${speedType} ${statblock.speed[speedType]} ft.`;
+    }
+  }
+
+  str += `
+          </p>
+        </div> <!-- property line -->
+        <svg height="5" width="100%" class="tapered-rule">
+        <polyline points="0,0 400,2.5 0,5"></polyline>
+      </svg>
+        <div class="abilities">
+          <div class="ability-strength">
+            <h4>STR</h4>
+            <p>${statblock.strength} (${abilityModifierTable[statblock.strength]})</p>
+          </div> <!-- ability strength -->
+          <div class="ability-dexterity">
+            <h4>DEX</h4>
+            <p>${statblock.dexterity} (${abilityModifierTable[statblock.dexterity]})</p>
+          </div> <!-- ability dexterity -->
+          <div class="ability-constitution">
+            <h4>CON</h4>
+            <p>${statblock.constitution} (${abilityModifierTable[statblock.constitution]})</p>
+          </div> <!-- ability constitution -->
+          <div class="ability-intelligence">
+            <h4>INT</h4>
+            <p>${statblock.intelligence} (${abilityModifierTable[statblock.intelligence]})</p>
+          </div> <!-- ability intelligence -->
+          <div class="ability-wisdom">
+            <h4>WIS</h4>
+            <p>${statblock.wisdom} (${abilityModifierTable[statblock.wisdom]})</p>
+          </div> <!-- ability wisdom -->
+          <div class="ability-charisma">
+            <h4>CHA</h4>
+            <p>${statblock.charisma} (${abilityModifierTable[statblock.charisma]})</p>
+          </div> <!-- ability charisma -->
+        </div> <!-- abilities -->
+        <svg height="5" width="100%" class="tapered-rule">
+        <polyline points="0,0 400,2.5 0,5"></polyline>
+      </svg>`;
+
+      /*
+      const dmgVulnerabilityKeys = Object.keys(statblock.damage_vulnerabilities);
+      if (dmgVulnerabilityKeys.length > 0) {
+        str += `<div class="property-line first">
+                  <h4>Damage Vulnerabilities</h4>
+                  <p>`;
+        
+        dmgVulnerabilityKeys.forEach((key, index) => {
+          console.log(`${key}: ${courses[key]}`);
+          str += ``
+        });
+        str += `</p>
+                </div> <!-- property line -->`
+      }
+      const dmgResistanceKeys = Object.keys(statblock.damage_resistances);
+      const dmgImmunitiesKeys = Object.keys(statblock.damage_immunities);
+      const conditionImmunitiesKeys = Object.keys(statblock.condition_immunities);
+      const sensesKeys = Object.keys(statblock.senses);
+      */
+
+      if (statblock.damage_vulnerabilities.length > 0) {
+        str+= `
+        <div class="property-line first">
+          <h4>Damage Vulnerabilities</h4>
+          <p>${statblock.damage_vulnerabilities}</p>
+        </div> <!-- property line -->`
+      }
+      if (statblock.damage_resistances.length > 0) {
+        str+= `
+        <div class="property-line first">
+          <h4>Damage Resistances</h4>
+          <p>${statblock.damage_resistances}</p>
+        </div> <!-- property line -->`
+      }
+      if (statblock.damage_immunities.length > 0) {
+        str+= `
+        <div class="property-line first">
+          <h4>Damage Immunities</h4>
+          <p>${statblock.damage_immunities}</p>
+        </div> <!-- property line -->`
+      }
+      if (statblock.condition_immunities.length > 0) {
+        str+= `
+        <div class="property-line first">
+          <h4>Condition Immunities</h4>
+          <p>${statblock.condition_immunities}</p>
+        </div> <!-- property line -->`
+      }
+      if (statblock.senses.length > 0) {
+        str+= `
+        <div class="property-line first">
+          <h4>Senses</h4>
+          <p>${statblock.senses}</p>
+        </div> <!-- property line -->`
+      }
+      if (statblock.languages.length > 0) {
+        str+= `
+        <div class="property-line first">
+          <h4>Languages</h4>
+          <p>${statblock.languages}</p>
+        </div> <!-- property line -->`
+      } else {
+        str+= `
+        <div class="property-line first">
+          <h4>Languages</h4>
+          <p>&mdash;</p>
+        </div> <!-- property line -->`        
+      }
+
+      str+= `
+        <div class="property-line first">
+          <h4>Challenge</h4>
+          <p>${statblock.challenge_rating} (${challengeRatingXPTable[statblock.challenge_rating]} XP)</p>
+        </div> <!-- property line -->
+      </div> <!-- top stats -->`
+
+
+      str+= `
+      <svg height="5" width="100%" class="tapered-rule">
+        <polyline points="0,0 400,2.5 0,5"></polyline>
+      </svg>`;
+
+
+      if (statblock.special_abilities.length > 0) {
+        for (let specialAbility of statblock.special_abilities) {
+          str+= `
+          <div class="property-block">
+            <h4>${specialAbility.name}.</h4>
+            <p>${specialAbility.desc}</p>
+          </div> <!-- property block -->`;
+        }
+      }
+      str+= `
+    </div> <!-- section left -->
+    <div class="section-right">`;
+    
+    if (statblock.actions.length > 0) {
+        str += `
+          <div class="actions">
+            <h3>Actions</h3>`;
+        for (let action of statblock.actions) {
+          str+= `
+          <div class="property-block">
+            <h4>${action.name}.</h4>
+            <p>${action.desc}</p>
+          </div> <!-- property block -->`;
+        }
+        str += `
+          </div> <!-- actions -->`
+    }  
+    if (statblock.legendary_actions.length > 0) {
+      str += `
+        <div class="actions">
+          <h3>Legendary Actions</h3>
+          <div class="property-block">
+            <p>${statblock.legendary_desc}.</p>
+          </div> <!-- property block -->`;
+      for (let action of statblock.actions) {
+        str+= `
+        <div class="property-block">
+          <h4>${action.name}.</h4>
+          <p>${action.desc}</p>
+        </div> <!-- property block -->`;
+      }
+      str += `
+        </div> <!-- legendary actions -->`
+    }   
+        str += `
+    </div> <!-- section right -->
+    <hr class="orange-border bottom" />
+  </div> <!-- stat block -->`;
+
+
+  document.getElementById('searchResults').innerHTML = str;
 }
 
 function SaveGame() {
