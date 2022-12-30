@@ -270,7 +270,7 @@ abilityModifierTable = [
     </div> <!-- stat block -->`;
   
   
-    document.getElementById('addContainer').innerHTML = str;  
+    document.getElementById('addZone').innerHTML = str;  
     document.getElementById("statblockSize").value = statblock.size;
     document.getElementById("statblockType").value = statblock.type;
     document.getElementById("statblockAlignment").value = statblock.alignment;

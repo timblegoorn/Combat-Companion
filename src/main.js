@@ -81,6 +81,8 @@ function Init() {
   searchBar = document.getElementById("monsterName");
 
   searchBar.addEventListener('input', UpdateSearchResults);
+
+  getMonstersByName(""); // get list of all monsters
 }
 
 // Call the displayObjectList function when the page loads

@@ -15,17 +15,19 @@
 
     <div class="divBlocks">
       <div class="flex-container">
+        <div class="divInlineBlocks" id="unitDisplay"></div>
+
         <div class="divInlineBlocks" id="searchContainer">
           <form onsubmit="return false">
             <input type="text" class="searchBar" id="monsterName" name="monsterName" maxlength="30" placeholder="Search any 5E Monsters" required autocomplete="on"><br>
           </form> 
-          <div id="searchResults">
+          <div id="searchResults" onscroll="ScrollSearchResults(event);">
 
           </div>
         </div>
         <div class="divInlineBlocks" id="addContainer">
-
-
+          <button onclick="">Add Basic Unit</button><button onclick="">Add PC</button><button onclick="">Statblock Editor</button>
+          <div id="addZone"></div>
           <!--
           Add a custom unit:
           <br>
