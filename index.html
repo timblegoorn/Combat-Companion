@@ -15,18 +15,18 @@
 
     <div class="divBlocks">
       <div class="flex-container">
-        <div class="divInlineBlocks">
-          Search for a predefined unit:
-          <br><br>
+        <div class="divInlineBlocks" id="searchContainer">
           <form onsubmit="return false">
-            <label for="monsterName">Unit Name:</label><br>
-            <input type="text" id="monsterName" name="monsterName" maxlength="30" placeholder="Search any 5E Monsters" required autocomplete="on"><br>
+            <input type="text" class="searchBar" id="monsterName" name="monsterName" maxlength="30" placeholder="Search any 5E Monsters" required autocomplete="on"><br>
           </form> 
           <div id="searchResults">
 
           </div>
         </div>
-        <div class="divInlineBlocks">
+        <div class="divInlineBlocks" id="addContainer">
+
+
+          <!--
           Add a custom unit:
           <br>
           <i>*denotes required.</i>
@@ -42,6 +42,7 @@
             <input type="number" id="itemAC" name="itemAC"><br>
             <input type="submit" value="Submit">
           </form> 
+        -->
         </div>
       </div>
       <button type="button" onclick="SaveGame()">Save Current Combat</button>

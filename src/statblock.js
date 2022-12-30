@@ -98,17 +98,20 @@ abilityModifierTable = [
         <div class="top-stats">
           <div class="property-line first">
             <h4>Armor Class</h4>
-            <p>${statblock.armor_class} (${statblock.armor_desc})</p>
+            <input class="statblockNumberInput" type="number" min="1" max="40" id="statblockAC" name="statblockAC" value="${statblock.armor_class}"> 
+            (<span class="statblockTextInput" id="statblockACDesc" contenteditable="true">${statblock.armor_desc}</span>)
           </div> <!-- property line -->
           <div class="property-line">
             <h4>Hit Points</h4>
-            <p>${statblock.hit_points} (${statblock.hit_dice})</p>
+            <input class="statblockNumberInput" type="number" min="1" max="999" id="statblockHP" name="statblockHP" value="${statblock.hit_points}">
+            (<span class="statblockTextInput" id="statblockHitDice" contenteditable="true">${statblock.hit_dice}</span>)
           </div> <!-- property line -->
           <div class="property-line last">
             <h4>Speed</h4>
             <p>`
     
     // Iterate through speed string
+    // TODO make speed editable
     for (const speedType in statblock.speed) {
       if (speedType == 'walk') {
         str += `${statblock.speed[speedType]} ft. `;
@@ -267,7 +270,7 @@ abilityModifierTable = [
     </div> <!-- stat block -->`;
   
   
-    document.getElementById('searchResults').innerHTML = str;  
+    document.getElementById('addContainer').innerHTML = str;  
     document.getElementById("statblockSize").value = statblock.size;
     document.getElementById("statblockType").value = statblock.type;
     document.getElementById("statblockAlignment").value = statblock.alignment;
