@@ -36,7 +36,14 @@ body {
 }
 
 .statblockTextInput {
+  background-color: #FDF1DC;
+  border: 1px dotted black;
+}
 
+.statblockNumberInput {
+  background-color: #FDF1DC;
+  border: 1px dotted black;
+  width: 45px;
 }
 
 .italic {

@@ -22,7 +22,7 @@ function DisplaySearchResults() {
 
   for (const monster of monsterList) {
     const listItem = document.createElement('div');
-    listItem.className = "unit";
+    listItem.className = "searchResultsUnit";
     listItem.id = `${monster.slug}`;
     listItem.innerHTML = `${monster.name}`;
     listItem.onclick = function() {ClickSearchedItem(this.id);};
