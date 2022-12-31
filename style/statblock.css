@@ -35,6 +35,10 @@ body {
   width: min-content;
 }
 
+.statblockSelect:focus {
+  border: 1px solid black;
+}
+
 .statblockTextInput {
   background-color: #FDF1DC;
   border: 1px dotted black;
@@ -46,8 +50,18 @@ body {
   width: 45px;
 }
 
+.firstCap {
+  text-transform: capitalize;
+}
+
 .italic {
   font-style: italic;
+}
+
+.spanOnce {
+  page-break-inside: avoid;           /* Theoretically FF 20+ */
+  break-inside: avoid-column;         /* Chrome, Safari, IE 11 */
+  display:table;                      /* Actually FF 20+ */
 }
 
   .stat-block {
@@ -55,11 +69,15 @@ body {
     margin: 20px;
     display: inline-block;
     vertical-align: top;
-    width: 17%;
-    min-width:280px;
+    width: 46.5%;
+    min-width: 560px;
     background: #FDF1DC;
+    background-image: url(../assets/paper.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
     padding: 5px 10px 20px;
     box-shadow: 0 0 1.5em #867453;
+    column-count: 2;
   }
   .stat-block.wide{
     width: 46.5%;
@@ -103,6 +121,7 @@ body {
     padding: 0 10px 0;
     margin: -10px -10px 0;
     box-sizing: initial;
+    column-span: all;
   }
   .orange-border.bottom{
     margin: 15px -10px -20px;

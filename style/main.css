@@ -114,6 +114,7 @@ body {
   cursor: pointer;
   border-color: #922610;
   text-decoration: underline;
+  background-color: #f0e4d0;
 }
 
 #searchResults {
