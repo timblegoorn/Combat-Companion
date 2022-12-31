@@ -47,12 +47,18 @@ function UpdateSearchResults(e) {
     }
 }
 
+function ResetSearchBar() {
+  if (document.getElementById("monsterName").value == "") return;
+  document.getElementById("monsterName").value = "";
+  getMonstersByName("");
+}
+
 // Will load the next list of monsters (if applicable) if the bottom of the searched list is reached by scrolling
 function ScrollSearchResults(e) {
   if (lastPost != undefined) {
     if (lastPost.next != null) {
       var searchResElement = document.getElementById("searchResults")
-      if(!loadingNewList && Math.abs(searchResElement.scrollHeight - searchResElement.scrollTop - searchResElement.clientHeight) < 100) {
+      if(!loadingNewList && Math.abs(searchResElement.scrollHeight - searchResElement.scrollTop - searchResElement.clientHeight) < 400) {
         loadingNewList = true;
         appendMonsterList();
       }
@@ -64,6 +70,10 @@ function ScrollSearchResults(e) {
 function DisplaySearchResults() {
   searchResults.innerHTML = "";
 
+  if (monsterList.length == 0) {
+    searchResults.innerHTML = "<br>No Results Found";
+    return;
+  }
   for (const monster of monsterList) {
     const listItem = document.createElement('div');
     listItem.className = "searchResultsUnit";
