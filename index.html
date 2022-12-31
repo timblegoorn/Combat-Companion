@@ -19,7 +19,11 @@
 
         <div class="divInlineBlocks" id="searchContainer">
           <form onsubmit="return false">
-            <input type="text" class="searchBar" id="monsterName" name="monsterName" maxlength="30" placeholder="Search any Open5E Monsters" required autocomplete="on"><br>
+            <div class="relativeContainer">
+              <input type="text" class="searchBar" id="monsterName" name="monsterName" maxlength="30" placeholder="Search any Open5E Monsters" required autocomplete="on">
+              <i id="searchbarX" class="fa-solid fa-x icon" onclick="ResetSearchBar()"></i>
+              <br>
+            </div>
           </form> 
           <div id="searchResults" onscroll="ScrollSearchResults(event);">
 
@@ -57,5 +61,6 @@
   <script src="src/main.js"></script>
   <script src="src/requests.js"></script>
   <script src="src/statblock.js"></script>
+  <script src="https://kit.fontawesome.com/b54a634fde.js" crossorigin="anonymous"></script>
 </body>
 </html>

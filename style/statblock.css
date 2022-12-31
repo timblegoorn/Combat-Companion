@@ -42,6 +42,7 @@ body {
 .statblockTextInput {
   background-color: #FDF1DC;
   border: 1px dotted black;
+  min-width: 10px;
 }
 
 .statblockNumberInput {
