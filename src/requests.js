@@ -91,5 +91,6 @@ function ClickSearchedItem(id) {
 
   if (foundMonster != undefined) {
     RenderEditableStatBlock(foundMonster);
+    //RenderStatBlock(foundMonster);
   }
 }

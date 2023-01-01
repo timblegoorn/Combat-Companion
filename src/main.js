@@ -83,6 +83,7 @@ function Init() {
   searchBar.addEventListener('input', UpdateSearchResults);
 
   getMonstersByName(""); // get list of all monsters
+  RenderEditableStatBlock(currentStatBlock);
 }
 
 // Call the displayObjectList function when the page loads
