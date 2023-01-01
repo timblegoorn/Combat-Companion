@@ -121,13 +121,13 @@ var currentStatBlock = blankStatblock;
 
     // Name, size, type, alignment
     var str = `
-    <div class="stat-block">
+    <div id="stat-block-edit" class="stat-block">
       <hr class="orange-border" />
       <div class="section-left">
         <div class="creature-heading">
-          <h1><input class="h1Input" type="text" id="statblockName" name="statblockName" maxlength="40" value="${sb.name}"></h1>
+          <h1><input class="h1Input" type="text" id="statblock-name" name="statblockName" maxlength="40" value="${sb.name}"></h1>
           <h2>
-            <select class="statblockSelect italic" name="statblockSize" id="statblockSize">
+            <select class="statblockSelect italic" name="statblock" id="statblock-size">
               <option value="Tiny">Tiny</option>
               <option value="Small">Small</option>
               <option value="Medium">Medium</option>
@@ -136,7 +136,7 @@ var currentStatBlock = blankStatblock;
               <option value="Gargantuan">Gargantuan</option>
               <option value="Colossal">Colossal</option>
             </select>
-            <select class="statblockSelect italic" name="statblockType" id="statblockType">
+            <select class="statblockSelect italic" name="statblockType" id="statblock-type">
               <option value="aberration">aberration</option>
               <option value="beast">beast</option>
               <option value="celestial">celestial</option>
@@ -152,7 +152,7 @@ var currentStatBlock = blankStatblock;
               <option value="plant">plant</option>
               <option value="undead">undead</option>
             </select>
-            <select class="statblockSelect italic" name="statblockAlignment" id="statblockAlignment">
+            <select class="statblockSelect italic" name="statblockAlignment" id="statblock-alignment">
               <option value="lawful good">lawful good</option>
               <option value="neutral good">neutral good</option>
               <option value="chaotic good">chaotic good</option>
@@ -172,27 +172,30 @@ var currentStatBlock = blankStatblock;
         <div class="top-stats spanOnce">
           <div class="property-line first">
             <h4>Armor Class </h4>
-            <input class="statblockNumberInput" type="number" min="1" max="40" id="statblockAC" name="statblockAC" value="${sb.armor_class}"> 
-            (<span class="statblockTextInput" id="statblockACDesc" contenteditable="true">${sb.armor_desc}</span>)
+            <input class="statblockNumberInput" type="number" min="1" max="40" id="statblock-armor_class" name="statblockAC" value="${sb.armor_class}"> 
+            (<span class="statblockTextInput" id="statblock-armor_desc" contenteditable="true">${sb.armor_desc}</span>)
           </div> <!-- property line -->
           <div class="property-line">
             <h4>Hit Points </h4>
-            <input class="statblockNumberInput" type="number" min="1" max="999" id="statblockHP" name="statblockHP" value="${sb.hit_points}">
-            (<span class="statblockTextInput" id="statblockHitDice" contenteditable="true">${sb.hit_dice}</span>)
+            <input class="statblockNumberInput" type="number" min="1" max="999" id="statblock-hit_points" name="statblockHP" value="${sb.hit_points}">
+            (<span class="statblockTextInput" id="statblock-hit_dice" contenteditable="true">${sb.hit_dice}</span>)
           </div> <!-- property line -->
           <div class="property-line last firstCap">
             <h4>Speed </h4>
-            <p>`
+            <p class="relativeContainer">`
     
     // Iterate through speed string
     // TODO make speed editable
     for (const speedType in sb.speed) {
       if (speedType == 'hover') {
-        str += `(Can <b>Hover</b>) `;
+        str += `(Can <b>Hover</b>) <i class="fa-solid fa-x solidIcon" onclick="sbRemoveSpeed('${speedType}')"></i> `;
       } else {
-        str += `${speedType} ${sb.speed[speedType]} ft. `;
+        str += `<input class="statblockTextInput small" id="statblockSpeedType-${speedType}" contenteditable="true" value="${speedType}"></input>
+                <input class="statblockNumberInput" type="number" min="1" max="120" id="statblockSpeed-${speedType}" name="statblockSpeed-${speedType}" value="${sb.speed[speedType]}"> ft.
+                <i class="fa-solid fa-x solidIcon" onclick="sbRemoveSpeed('${speedType}')"></i> `;
       }
     }
+    str += ` <i class="fa-solid fa-plus solidIcon" onclick="sbAddSpeed()"></i>`
   
     // Base stats
     str += `
@@ -401,9 +404,45 @@ var currentStatBlock = blankStatblock;
     document.getElementById('addZone').innerHTML = str;  
 
     // Set values of drop down elements based on sb
-    document.getElementById("statblockSize").value = sb.size;
-    document.getElementById("statblockType").value = sb.type;
-    document.getElementById("statblockAlignment").value = sb.alignment;
+    document.getElementById("statblock-size").value = sb.size;
+    document.getElementById("statblock-type").value = sb.type;
+    document.getElementById("statblock-alignment").value = sb.alignment;
+
+    //document.getElementById("statblockSize").addEventListener('input', UpdateSearchResults);
+    document.getElementById("stat-block-edit").querySelectorAll("input, select, span.statblockTextInput").forEach((elem) => elem.addEventListener("input", HandleStatBlockEdit));
+  }
+
+  // Handles input to the current editable stat block and updates the current relevant statblock object properties accordingly
+  function HandleStatBlockEdit(e) {
+    var elementID = e.target.id;
+    var editContent, newKey, oldKey;
+    console.log(e.target.id)
+    if (e.target.value == undefined) {
+      editContent = e.target.innerHTML;
+      console.log(e.target.innerHTML)
+    } else {
+      editContent = e.target.value;
+      console.log(e.target.value)
+    }
+
+    if (elementID.includes("statblockSpeedType")) {
+      oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      newKey = editContent;
+      currentStatBlock.speed[newKey] = currentStatBlock.speed[oldKey];
+      delete currentStatBlock.speed[oldKey];
+      document.getElementById(elementID).id = `statblockSpeedType-${newKey}`;
+      console.log(oldKey)
+    } else if (elementID.includes("statblockSpeed")) {
+      oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      currentStatBlock.speed[oldKey] = editContent;
+      document.getElementById(elementID).value = editContent;
+      console.log(oldKey)     
+    } else {
+      oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      currentStatBlock[oldKey] = editContent;
+    }
+
+    //RenderEditableStatBlock(currentStatBlock);
   }
   
   // Statblock HTML template and CSS provided from: https://codepen.io/retractedhack/pen/gPLpWe
@@ -651,4 +690,17 @@ var currentStatBlock = blankStatblock;
     </div> <!-- stat block -->`;  
   
     document.getElementById('addZone').innerHTML = str; 
+  }
+
+  function sbAddSpeed() {
+    var numSpeed = Object.keys(currentStatBlock.speed).length;
+
+    currentStatBlock.speed[`Speed${numSpeed}`] = 30;
+    console.log(currentStatBlock)
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function sbRemoveSpeed(speedType) {
+    delete currentStatBlock.speed[speedType];
+    RenderEditableStatBlock(currentStatBlock);
   }

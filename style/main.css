@@ -100,9 +100,17 @@ body {
   border: 1px solid black;
 }
 
-.icon:hover {
+.icon:hover, .solidIcon:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.solidIcon {
+  width: 15px;
+  height: 15px;
+  padding-right: 5px;
+  padding-left: 5px;
+  display:contents !important;
 }
 
 .relativeContainer {
