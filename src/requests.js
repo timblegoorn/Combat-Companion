@@ -90,6 +90,7 @@ function ClickSearchedItem(id) {
   var foundMonster = monsterList.find((monster) => monster.slug === id);
 
   if (foundMonster != undefined) {
+    currentStatBlock = foundMonster;
     RenderEditableStatBlock(foundMonster);
     //RenderStatBlock(foundMonster);
   }

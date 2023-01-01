@@ -1,13 +1,41 @@
 // Modifier corresponding to ability score from 0-30 (index 0 based, which is never used but there as placeholder)
-abilityModifierTable = [
+const abilityModifierTable = [
     "-5", "-5", "-4", "-4", "-3", "-3", "-2", "-2",
     "-1", "-1", "+0", "+0", "+1", "+1", "+2", "+2",
     "+3", "+3", "+4", "+4", "+5", "+5", "+6", "+6",
     "+7", "+7", "+8", "+8", "+9", "+9", "+10"
   ];
+
+const skillList = [
+  "acrobatics", "animal handling", "arcana", "athletics", "deception",
+  "history", "insight", "intimidation", "investigation", "medicine",
+  "nature", "perception", "performance", "persuasion", "religion",
+  "sleight of hand", "stealth", "survival",  
+]
+
+const skillToAbilityTable = {
+  "acrobatics": "dexterity",
+  "animal handling": "wisdom",
+  "arcana": "intelligence",
+  "athletics": "strength",
+  "deception": "charisma",
+  "history": "intelligence",
+  "insight": "wisdom",
+  "intimidation": "charisma",
+  "investigation": "intelligence",
+  "medicine": "wisdom",
+  "nature": "intelligence",
+  "perception": "wisdom",
+  "performance": "charisma",
+  "persuasion": "charisma",
+  "religion": "intelligence",
+  "sleight of hand": "dexterity",
+  "stealth": "dexterity",
+  "survival": "wisdom",
+};
   
   // Convert challenge rating to a proficiency bonus
-  challengeRatingProficiencyBonusTable = {
+const challengeRatingProficiencyBonusTable = {
     "0": 2,
     "1/8": 2,
     "1/4": 2,
@@ -42,10 +70,10 @@ abilityModifierTable = [
     "28": 8,
     "29": 9,
     "30": 9,
-  }
+  };
 
   // Convert challenge rating to a numerical XP reward
-  challengeRatingXPTable = {
+const challengeRatingXPTable = {
     "0": 0,
     "1/8": 25,
     "1/4": 50,
@@ -80,7 +108,7 @@ abilityModifierTable = [
     "28": 120000,
     "29": 135000,
     "30": 155000,
-  }
+  };
 
 var blankStatblock = {
   "slug": "monster-identifier",
@@ -148,7 +176,7 @@ var blankStatblock = {
   "document__slug": "custom",
   "document__title": "custom",
   "document__license_url": "https://github.com/timblegoorn/Combat-Companion"
-}
+};
 
 var currentStatBlock = blankStatblock;
   
@@ -296,12 +324,34 @@ var currentStatBlock = blankStatblock;
           <div class="property-line firstCap">
             <h4>Skills </h4>
             <p>`
+        var numSkills = Object.keys(sb.skills).length;
+        var i = 0;
         for (const skill in sb.skills) {
-          str += `<span class="statblockTextInput" id="statblockSkillType-${skill}" contenteditable="true">${skill}</span>
-            <input class="statblockNumberInput" type="number" min="1" max="120" id="statblockSkill-${skill}" name="statblockSkill-${skill}" value="${sb.skills[skill]}"> 
+          str += `
+          <select class="statblockSelect" name="statblockSkillType" id="statblockSkillType-${skill}">
+            <option value="acrobatics">Acrobatics</option>
+            <option value="animal handling">Animal Handling</option>
+            <option value="arcana">Arcana</option>
+            <option value="athletics>Athletics</option>
+            <option value="deception">Deception</option>
+            <option value="history">History</option>
+            <option value="insight">Insight</option>
+            <option value="intimidation">Intimidation</option>
+            <option value="investigation">Investigation</option>
+            <option value="medicine">Medicine</option>
+            <option value="nature">Nature</option>
+            <option value="perception">Perception</option>
+            <option value="performance">Performance</option>
+            <option value="persuasion">Persuasion</option>
+            <option value="religion">Religion</option>
+            <option value="sleight of hand">Sleight of Hand</option>
+            <option value="stealth">Stealth</option>
+            <option value="survival">Survival</option>
+          </select>`
+           str += `
             <i class="fa-solid fa-x solidIcon" onclick="sbRemoveSkill('${skill}')"></i> `;
         }
-        str += ` <i class="fa-solid fa-plus solidIcon" onclick="sbAddSkill()"></i>`
+        if (numSkills < 18) str += ` <i class="fa-solid fa-plus solidIcon" onclick="sbAddSkill()"></i>`
         str += `</p>
           </div> <!-- property line -->`;
 
@@ -456,6 +506,10 @@ var currentStatBlock = blankStatblock;
     document.getElementById("statblock-alignment").value = sb.alignment;
     document.getElementById("statblock-challenge_rating").value = sb.challenge_rating
 
+    for (const skill in sb.skills) {
+      document.getElementById(`statblockSkillType-${skill}`).value = skill;
+    }
+
     //document.getElementById("statblockSize").addEventListener('input', UpdateSearchResults);
     document.getElementById("stat-block-edit").querySelectorAll("input, select, span.statblockTextInput").forEach((elem) => elem.addEventListener("input", HandleStatBlockEdit));
   }
@@ -505,6 +559,17 @@ var currentStatBlock = blankStatblock;
         currentStatBlock[oldKey] = challengeRatingProficiencyBonusTable[currentStatBlock.challenge_rating] + parseInt(abilityModifierTable[currentStatBlock[editContent]]);
       } else {
         currentStatBlock[oldKey] = null;
+      }
+    } else if (elementID.includes("SkillType")) {
+      oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      newKey = editContent;
+      if (oldKey == newKey) return;
+      if (currentStatBlock.skills[newKey] == undefined) {
+        currentStatBlock.skills[newKey] = parseInt(abilityModifierTable[currentStatBlock[skillToAbilityTable[newKey]]]) + challengeRatingProficiencyBonusTable[currentStatBlock.challenge_rating];
+        delete currentStatBlock.skills[oldKey];
+        document.getElementById(elementID).id = `statblockSkillType-${newKey}`;
+      } else {
+        document.getElementById(elementID).value = oldKey;
       }
     } else {
       oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
@@ -763,5 +828,18 @@ var currentStatBlock = blankStatblock;
 
   function sbRemoveSpeed(speedType) {
     delete currentStatBlock.speed[speedType];
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function sbAddSkill() {
+    var randSkillNum = Math.floor(Math.random() * skillList.length);
+    var randSkill = skillList[randSkillNum];
+    if (currentStatBlock.skills[randSkill] != undefined) return sbAddSkill();
+    currentStatBlock.skills[randSkill] = parseInt(abilityModifierTable[currentStatBlock[skillToAbilityTable[randSkill]]]) + challengeRatingProficiencyBonusTable[currentStatBlock.challenge_rating];
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function sbRemoveSkill(skill) {
+    delete currentStatBlock.skills[skill];
     RenderEditableStatBlock(currentStatBlock);
   }
