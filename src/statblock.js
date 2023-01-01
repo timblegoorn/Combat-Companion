@@ -6,6 +6,44 @@ abilityModifierTable = [
     "+7", "+7", "+8", "+8", "+9", "+9", "+10"
   ];
   
+  // Convert challenge rating to a proficiency bonus
+  challengeRatingProficiencyBonusTable = {
+    "0": 2,
+    "1/8": 2,
+    "1/4": 2,
+    "1/2": 2,
+    "1": 2,
+    "2": 2,
+    "3": 2,
+    "4": 2,
+    "5": 3,
+    "6": 3,
+    "7": 3,
+    "8": 3,
+    "9": 4,
+    "10": 4,
+    "11": 4,
+    "12": 4,
+    "13": 5,
+    "14": 5,
+    "15": 5,
+    "16": 5,
+    "17": 6,
+    "18": 6,
+    "19": 6,
+    "20": 6,
+    "21": 7,
+    "22": 7,
+    "23": 7,
+    "24": 7,
+    "25": 8,
+    "26": 8,
+    "27": 8,
+    "28": 8,
+    "29": 9,
+    "30": 9,
+  }
+
   // Convert challenge rating to a numerical XP reward
   challengeRatingXPTable = {
     "0": 0,
@@ -185,13 +223,12 @@ var currentStatBlock = blankStatblock;
             <p class="relativeContainer">`
     
     // Iterate through speed string
-    // TODO make speed editable
     for (const speedType in sb.speed) {
       if (speedType == 'hover') {
         str += `(Can <b>Hover</b>) <i class="fa-solid fa-x solidIcon" onclick="sbRemoveSpeed('${speedType}')"></i> `;
       } else {
-        str += `<input class="statblockTextInput small" id="statblockSpeedType-${speedType}" contenteditable="true" value="${speedType}"></input>
-                <input class="statblockNumberInput" type="number" min="1" max="120" id="statblockSpeed-${speedType}" name="statblockSpeed-${speedType}" value="${sb.speed[speedType]}"> ft.
+        str += `<span class="statblockTextInput" id="statblockSpeedType-${speedType}" contenteditable="true">${speedType}</span>
+                <input class="statblockNumberInput" type="number" min="1" max="120" id="statblockSpeed-${speedType}" name="statblockSpeed-${speedType}" value="${sb.speed[speedType]}"> 
                 <i class="fa-solid fa-x solidIcon" onclick="sbRemoveSpeed('${speedType}')"></i> `;
       }
     }
@@ -207,27 +244,33 @@ var currentStatBlock = blankStatblock;
           <div class="abilities">
             <div class="ability-strength">
               <h4>STR</h4>
-              <p>${sb.strength} (${abilityModifierTable[sb.strength]})</p>
+              <p><input class="statblockNumberInput small" type="number" min="1" max="30" id="statblockabilitiescore-strength" name="statblock-strength" value="${sb.strength}">
+              (<span id="statblockabilitiescore-strengthMod">${abilityModifierTable[sb.strength]}</span>)</p>
             </div> <!-- ability strength -->
             <div class="ability-dexterity">
               <h4>DEX</h4>
-              <p>${sb.dexterity} (${abilityModifierTable[sb.dexterity]})</p>
+              <p><input class="statblockNumberInput small" type="number" min="1" max="30" id="statblockabilitiescore-dexterity" name="statblock-dexterity" value="${sb.dexterity}">
+              (<span id="statblockabilitiescore-dexterityMod">${abilityModifierTable[sb.dexterity]}</span>)</p>
             </div> <!-- ability dexterity -->
             <div class="ability-constitution">
               <h4>CON</h4>
-              <p>${sb.constitution} (${abilityModifierTable[sb.constitution]})</p>
+              <p><input class="statblockNumberInput small" type="number" min="1" max="30" id="statblockabilitiescore-constitution" name="statblock-constitution" value="${sb.constitution}">
+              (<span id="statblockabilitiescore-constitutionMod">${abilityModifierTable[sb.constitution]}</span>)</p>
             </div> <!-- ability constitution -->
             <div class="ability-intelligence">
               <h4>INT</h4>
-              <p>${sb.intelligence} (${abilityModifierTable[sb.intelligence]})</p>
+              <p><input class="statblockNumberInput small" type="number" min="1" max="30" id="statblockabilitiescore-intelligence" name="statblock-intelligence" value="${sb.intelligence}">
+              (<span id="statblockabilitiescore-intelligenceMod">${abilityModifierTable[sb.intelligence]}</span>)</p>
             </div> <!-- ability intelligence -->
             <div class="ability-wisdom">
               <h4>WIS</h4>
-              <p>${sb.wisdom} (${abilityModifierTable[sb.wisdom]})</p>
+              <p><input class="statblockNumberInput small" type="number" min="1" max="30" id="statblockabilitiescore-wisdom" name="statblock-wisdom" value="${sb.wisdom}">
+              (<span id="statblockabilitiescore-wisdomMod">${abilityModifierTable[sb.wisdom]}</span>)</p>
             </div> <!-- ability wisdom -->
             <div class="ability-charisma">
               <h4>CHA</h4>
-              <p>${sb.charisma} (${abilityModifierTable[sb.charisma]})</p>
+              <p><input class="statblockNumberInput small" type="number" min="1" max="30" id="statblockabilitiescore-charisma" name="statblock-charisma" value="${sb.charisma}">
+              (<span id="statblockabilitiescore-charismaMod">${abilityModifierTable[sb.charisma]}</span>)</p>
             </div> <!-- ability charisma -->
           </div> <!-- abilities -->
           <svg height="5" width="100%" class="tapered-rule">
@@ -235,112 +278,116 @@ var currentStatBlock = blankStatblock;
         </svg>`;
   
         // Saving throws
-        if (sb.strength_save != null || sb.dexterity_save != null || sb.constitution_save != null || sb.intelligence_save != null || sb.wisdom_save != null || sb.charisma_save != null) {
-          str+= `
-          <div class="property-line">
+        str+= `
+          <div class="property-line first">
             <h4>Saving Throws </h4>
             <p>`
-          if (sb.strength_save != null) {
-            str += `STR +${sb.strength_save} `
-          }
-          if (sb.dexterity_save != null) {
-            str += `DEX +${sb.dexterity_save} `
-          }
-          if (sb.constitution_save != null) {
-            str += `CON +${sb.constitution_save} `
-          }
-          if (sb.intelligence_save != null) {
-            str += `INT +${sb.intelligence_save} `
-          }
-          if (sb.wisdom_save != null) {
-            str += `WIS +${sb.wisdom_save} `
-          }
-          if (sb.charisma_save != null) {
-            str += `CHA +${sb.charisma_save}`
-          }
+            str+= `STR <input type="checkbox" id="statblockSaves-strength_save" name="statblockSaves-strength_save" value="strength">`;
+            str+= `DEX <input type="checkbox" id="statblockSaves-dexterity_save" name="statblockSaves-dexterity_save" value="dexterity">`;
+            str+= `CON <input type="checkbox" id="statblockSaves-constitution_save" name="statblockSaves-constitution_save" value="constitution">`;
+            str+= `INT <input type="checkbox" id="statblockSaves-intelligence_save" name="statblockSaves-intelligence_save" value="intelligence">`;
+            str+= `WIS <input type="checkbox" id="statblockSaves-wisdom_save" name="statblockSaves-wisdom_save" value="wisdom">`;
+            str+= `CHA <input type="checkbox" id="statblockSaves-charisma_save" name="statblockSaves-charisma_save" value="charisma">`;
           str += `</p>
             </div> <!-- property line -->`;
-        }
 
         // Skill bonuses
-        var skillsKeys = Object.keys(sb.skills);
-        if (skillsKeys.length > 0) {
-          str+= `
+        str+= `
           <div class="property-line firstCap">
             <h4>Skills </h4>
             <p>`
-          for (const skill in sb.skills) {
-            str += `${skill} +${sb.skills[skill]} `;
-          }
-          str += `</p>
-          </div> <!-- property line -->`;
+        for (const skill in sb.skills) {
+          str += `<span class="statblockTextInput" id="statblockSkillType-${skill}" contenteditable="true">${skill}</span>
+            <input class="statblockNumberInput" type="number" min="1" max="120" id="statblockSkill-${skill}" name="statblockSkill-${skill}" value="${sb.skills[skill]}"> 
+            <i class="fa-solid fa-x solidIcon" onclick="sbRemoveSkill('${skill}')"></i> `;
         }
+        str += ` <i class="fa-solid fa-plus solidIcon" onclick="sbAddSkill()"></i>`
+        str += `</p>
+          </div> <!-- property line -->`;
 
         // Damage vulnerability
-        if (sb.damage_vulnerabilities.length > 0) {
-          str+= `
+        str+= `
           <div class="property-line firstCap">
             <h4>Damage Vulnerabilities </h4>
-            <p>${sb.damage_vulnerabilities}</p>
+            <p><span class="statblockTextInput" id="statblock-damage_vulnerabilities" contenteditable="true">${sb.damage_vulnerabilities}</span></p>
           </div> <!-- property line -->`
-        }
 
         // Damage resistance
-        if (sb.damage_resistances.length > 0) {
-          str+= `
+        str+= `
           <div class="property-line firstCap">
             <h4>Damage Resistances </h4>
-            <p>${sb.damage_resistances}</p>
+            <p><span class="statblockTextInput" id="statblock-damage_resistances" contenteditable="true">${sb.damage_resistances}</span></p>
           </div> <!-- property line -->`
-        }
 
         // Damage immunity
-        if (sb.damage_immunities.length > 0) {
-          str+= `
+        str+= `
           <div class="property-line firstCap">
             <h4>Damage Immunities </h4>
-            <p>${sb.damage_immunities}</p>
+            <p><span class="statblockTextInput" id="statblock-damage_immunities" contenteditable="true">${sb.damage_immunities}</span></p>
           </div> <!-- property line -->`
-        }
 
         // Condition immunity
-        if (sb.condition_immunities.length > 0) {
-          str+= `
+        str+= `
           <div class="property-line firstCap">
             <h4>Condition Immunities </h4>
-            <p>${sb.condition_immunities}</p>
+            <p><span class="statblockTextInput" id="statblock-condition_immunities" contenteditable="true">${sb.condition_immunities}</span></p>
           </div> <!-- property line -->`
-        }
 
         // Senses
-        if (sb.senses.length > 0) {
-          str+= `
+        str+= `
           <div class="property-line firstCap">
             <h4>Senses </h4>
-            <p>${sb.senses}</p>
+            <p><span class="statblockTextInput" id="statblock-senses" contenteditable="true">${sb.senses}</span></p>
           </div> <!-- property line -->`
-        }
 
         // Languages
-        if (sb.languages.length > 0) {
-          str+= `
-          <div class="property-line firstCap">
-            <h4>Languages </h4>
-            <p>${sb.languages}</p>
-          </div> <!-- property line -->`
-        } else {
-          str+= `
-          <div class="property-line">
-            <h4>Languages </h4>
-            <p>&mdash;</p>
-          </div> <!-- property line -->`        
-        }
+        str+= `
+        <div class="property-line firstCap">
+          <h4>Languages </h4>
+          <p><span class="statblockTextInput" id="statblock-languages" contenteditable="true">${sb.languages}</span></p>
+        </div> <!-- property line -->`;
   
         // Challenge Rating + XP
         str+= `
-          <div class="property-line first">
+          <div class="property-line last">
             <h4>Challenge </h4>
-            <p>${sb.challenge_rating} (${challengeRatingXPTable[sb.challenge_rating]} XP)</p>
+            <select class="statblockSelect" name="statblock-challenge_rating" id="statblock-challenge_rating">
+              <option value="0">0</option>
+              <option value="1/8">1/8</option>
+              <option value="1/4">1/4</option>
+              <option value="1/2">1/2</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+              <option value="20">20</option>
+              <option value="21">21</option>
+              <option value="22">22</option>
+              <option value="23">23</option>
+              <option value="24">24</option>
+              <option value="25">25</option>
+              <option value="26">26</option>
+              <option value="27">27</option>
+              <option value="28">28</option>
+              <option value="29">29</option>
+              <option value="30">30</option>
+            </select>
+            <p>(<span id="statblock-challenge_ratingXP">${challengeRatingXPTable[sb.challenge_rating]}</span> XP) <b>Proficiency</b> +<span id="statblock-challenge_ratingProficiency">${challengeRatingProficiencyBonusTable[sb.challenge_rating]}</span></p>
           </div> <!-- property line -->
           <svg height="5" width="100%" class="tapered-rule">
             <polyline points="0,0 400,2.5 0,5"></polyline>
@@ -407,6 +454,7 @@ var currentStatBlock = blankStatblock;
     document.getElementById("statblock-size").value = sb.size;
     document.getElementById("statblock-type").value = sb.type;
     document.getElementById("statblock-alignment").value = sb.alignment;
+    document.getElementById("statblock-challenge_rating").value = sb.challenge_rating
 
     //document.getElementById("statblockSize").addEventListener('input', UpdateSearchResults);
     document.getElementById("stat-block-edit").querySelectorAll("input, select, span.statblockTextInput").forEach((elem) => elem.addEventListener("input", HandleStatBlockEdit));
@@ -434,9 +482,30 @@ var currentStatBlock = blankStatblock;
       console.log(oldKey)
     } else if (elementID.includes("statblockSpeed")) {
       oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      if (editContent < 1) editContent = 1;
+      if (editContent > 120) editContent = 120;
       currentStatBlock.speed[oldKey] = editContent;
       document.getElementById(elementID).value = editContent;
       console.log(oldKey)     
+    } else if (elementID.includes("abilitiescore")) {
+      oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      if (editContent < 1) editContent = 1;
+      if (editContent > 30) editContent = 30;
+      currentStatBlock[oldKey] = editContent;
+      document.getElementById(elementID).value = editContent
+      document.getElementById(`${elementID}Mod`).innerHTML = abilityModifierTable[editContent];
+    } else if (elementID.includes("challenge_rating")) {
+      oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      currentStatBlock[oldKey] = editContent;
+      document.getElementById(`${elementID}XP`).innerHTML = challengeRatingXPTable[editContent];
+      document.getElementById(`${elementID}Proficiency`).innerHTML = challengeRatingProficiencyBonusTable[editContent];
+    } else if (elementID.includes("Saves")) {
+      oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      if (document.getElementById(elementID).checked) {
+        currentStatBlock[oldKey] = challengeRatingProficiencyBonusTable[currentStatBlock.challenge_rating] + parseInt(abilityModifierTable[currentStatBlock[editContent]]);
+      } else {
+        currentStatBlock[oldKey] = null;
+      }
     } else {
       oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
       currentStatBlock[oldKey] = editContent;
@@ -611,25 +680,17 @@ var currentStatBlock = blankStatblock;
         }
 
         // Languages
-        if (sb.languages.length > 0) {
-          str+= `
+        str+= `
           <div class="property-line firstCap">
             <h4>Languages </h4>
             <p>${sb.languages}</p>
-          </div> <!-- property line -->`
-        } else {
-          str+= `
-          <div class="property-line">
-            <h4>Languages </h4>
-            <p>&mdash;</p>
-          </div> <!-- property line -->`        
-        }
-  
+          </div> <!-- property line -->`;
+
         // Challenge Rating + XP
         str+= `
           <div class="property-line first">
             <h4>Challenge </h4>
-            <p>${sb.challenge_rating} (${challengeRatingXPTable[sb.challenge_rating]} XP)</p>
+            <p>${sb.challenge_rating} (${challengeRatingXPTable[sb.challenge_rating]} XP) <span class="floatRight"><b>Proficiency</b> +${challengeRatingProficiencyBonusTable[sb.challenge_rating]}</span></p>
           </div> <!-- property line -->
           <svg height="5" width="100%" class="tapered-rule">
             <polyline points="0,0 400,2.5 0,5"></polyline>
