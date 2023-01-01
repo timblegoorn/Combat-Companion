@@ -12,6 +12,15 @@ body {
     max-width: 100%;
     font-family: 'Noto Sans', 'Myriad Pro', Calibri, Helvetica,
       Arial, sans-serif;
+      overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    word-break: break-all;
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
   }
 
 .h1Input {
@@ -42,11 +51,11 @@ body {
 .statblockTextInput {
   background-color: #FDF1DC;
   border: 1px dotted black;
-  min-width: 10px;
-}
-
-.statblockTextInput.small {
-  width: 50px;
+  display:inline-block;
+  min-width: 30px;
+  text-indent: 0;
+  padding-left: 3px;
+  padding-right: 3px;
 }
 
 .statblockNumberInput {
@@ -55,12 +64,20 @@ body {
   width: 45px;
 }
 
+.statblockNumberInput.small {
+  width: 35px;
+}
+
 .firstCap {
   text-transform: capitalize;
 }
 
 .italic {
   font-style: italic;
+}
+
+.floatRight {
+  float: right;
 }
 
 .spanOnce {
