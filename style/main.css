@@ -222,6 +222,18 @@ tr:hover {
   background-color: #fadca9;
   cursor: pointer;
 }
+td {
+  padding-left: 2px;
+}
+
+.selected {
+  background-color: #fadca9 !important;
+}
+
+.dead {
+  background-color: #afafaf !important;
+  font-style: italic;
+}
 
 #initiativeTable {
   width: 100%;

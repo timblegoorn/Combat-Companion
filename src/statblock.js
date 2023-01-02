@@ -465,7 +465,8 @@
           <h1>${sb.name}</h1>
           <i class="fa-solid fa-pen-to-square icon" onclick="EditCurrentStatBlock()"></i> Edit Statblock
           <br>
-          <i class="fa-solid fa-plus icon" onclick="AddCurrentStatBlockToCombat()"></i> Add to Combat`;
+          <i class="fa-solid fa-plus icon" onclick="AddCurrentStatBlockToCombat()"></i> Add to Combat With Initiative: 
+          <input class="statblockNumberInput" type="number" min="1" max="40" id="statblock-initiative" name="statblock-initiative">`;
         if (sb.control_type == undefined || sb.control_type == 'Enemy') {
           str += `
           <h2>${sb.size} ${sb.type}, ${sb.alignment}</h2>`;
@@ -812,27 +813,59 @@
   }
 
   function EditStatBlock(e, index) {
-    currentStatBlock = units[index];
+    let copiedSB = JSON.parse(JSON.stringify(units[index]));
+    currentStatBlock = copiedSB;
+    currentStatBlock.index = index;
     RenderEditableStatBlock(currentStatBlock);
   }
 
   function ViewStatBlock(e, index) {
     // prevent parent event propagation
-    if (e.target.className == "") {
-      currentStatBlock = units[index];
+
+    if (e.target.className == "" || e.target.className == "selected" || e.target.className == "dead") {
+      const collection = document.getElementsByClassName("selected");
+      if (collection.length > 0) collection[0].className = "";
+      e.target.parentNode.className = "selected";
+      let copiedSB = JSON.parse(JSON.stringify(units[index]));
+      currentStatBlock = copiedSB;
+      currentStatBlock.index = index;
       RenderStatBlock(currentStatBlock);
     }
   }
 
   function SaveCurrentStatBlock() {
+    let copiedSB = JSON.parse(JSON.stringify(currentStatBlock));
+    units[copiedSB.index] = copiedSB;
+
+    DisplayUnits();
     RenderStatBlock(currentStatBlock);
   }
 
   function AddCurrentStatBlockToCombat() {
     // Get the value of the input field
-    var initiative = Math.floor(Math.random() * 20) + 1 + parseInt(abilityModifierTable[currentStatBlock.dexterity]);
-    currentStatBlock.initiative = initiative;
-    units.push(currentStatBlock);
+    if (document.getElementById("statblock-initiative").value == '') var initiative = Math.floor(Math.random() * 20) + 1 + parseInt(abilityModifierTable[currentStatBlock.dexterity]);
+    else var initiative = document.getElementById(statblock-initiative).value
+
+    if (currentStatBlock.current_hit_points == undefined) currentStatBlock.current_hit_points = currentStatBlock.hit_points;
+    if (currentStatBlock.control_type == undefined) currentStatBlock.control_type = "Enemy";
+
+    let copiedSB = JSON.parse(JSON.stringify(currentStatBlock));
+    copiedSB.initiative = initiative;
+    units.push(copiedSB);
     DisplayUnits();
     return false;  
+  }
+
+  function AddBasicUnit() {
+    let copiedSB = JSON.parse(JSON.stringify(blankStatblock));
+
+    currentStatBlock = copiedSB;
+    RenderStatBlock(currentStatBlock)
+  }
+
+  function AddNewPC() {
+    let copiedSB = JSON.parse(JSON.stringify(blankPCStatblock));
+
+    currentStatBlock = copiedSB;
+    RenderStatBlock(currentStatBlock)
   }

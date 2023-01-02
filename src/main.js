@@ -25,7 +25,8 @@ function DisplayUnits() {
 
   const tableTitle = document.createElement('div');
   tableTitle.className = "tableTitle";
-  tableTitle.innerHTML = `<h1>Current Round: ${currentRound}</h1><button onclick="incrementTurn()">Next Turn</button>`;
+  if (units.length > 0) tableTitle.innerHTML = `<h1>Current Round: ${currentRound}</h1><h2>Current Turn: ${units[currentTurn].name}</h2><button onclick="incrementTurn()">Next Turn</button>`;
+  else tableTitle.innerHTML = `<h1>Current Round: ${currentRound}</h1><h2>Add Some Units to Get Started!</h2>`;
   objectListDiv.appendChild(tableTitle);
 
   const orangeBorderTop = document.createElement('div');
@@ -60,6 +61,7 @@ function DisplayUnits() {
         /${unit[columnTitleSlugs[i]]}
         `
       } else if (currentTurn == j && columnTitles[i] == "Initiative") {
+        row.className = "selected";
         dataVal = `<i class="fa-solid fa-chevron-right"></i> `;
         dataVal += unit[columnTitleSlugs[i]];
       } else dataVal = unit[columnTitleSlugs[i]];
@@ -69,10 +71,11 @@ function DisplayUnits() {
           numPCs++;
         } else {
           numEnemies++;
-          var exp = challengeRatingXPTable[unit.challenge_rating];
-          maxExp += exp;
+          var xp = challengeRatingXPTable[unit.challenge_rating];
+          maxExp += xp;
           if (unit.current_hit_points == 0) {
-            currentExp += exp;
+            row.className = "dead";
+            currentExp += xp;
           }
         }
       }
@@ -97,8 +100,11 @@ function DisplayUnits() {
 
   const tableFooter = document.createElement('div');
   tableFooter.className = "tableTitle";
-  tableFooter.innerHTML = `Total EXP Available: <b>${maxExp}</b> Earned EXP: <b>${currentExp}</b> Earned EXP Divided Per PC: <b>${currentExp/numPCs}</b>`;
+  var dividedXP = Math.floor(currentExp/numPCs);
+  if (Number.isNaN(dividedXP)) dividedXP = 0;
+  tableFooter.innerHTML = `Total XP Available: <b>${maxExp}</b> Earned XP: <b>${currentExp}</b> Earned XP Divided Per PC: <b>${dividedXP}</b>`;
   objectListDiv.appendChild(tableFooter);
+  objectListDiv.appendChild(orangeBorderBottom);
 
   document.getElementById("initiativeTable").querySelectorAll("input").forEach((elem) => elem.addEventListener("change", HandleTableQuickEdit));
 }
@@ -138,7 +144,7 @@ function incrementTurn() {
     currentRound++;
   }
 
-  if (units[currentTurn].current_hit_points == 0) {
+  if (units[currentTurn].current_hit_points == 0 && units[currentTurn].control_type != "PC") {
     incrementTurn();
     return;
   }
@@ -177,11 +183,19 @@ function AddUnit() {
   return false;
 }
 
+function ResetGame() {
+  currentRound = 1;
+  currentTurn = 0;
+  units = [];
 
+  DisplayUnits();
+  document.getElementById('addZone').innerHTML = "No currently selected unit"; 
+}
 
 function SaveGame() {
     var saveFile = {
         currentRound: currentRound,
+        currentTurn: currentTurn,
         units: units,
     }
 
@@ -191,9 +205,16 @@ function SaveGame() {
 function LoadGame() {
     var saveFile = JSON.parse(localStorage.getItem("CombatCompanionSave"));
     currentRound = saveFile.currentRound;
+    currentTurn = saveFile.currentTurn;
     units = saveFile.units;
 
     DisplayUnits();
+    if (units.length > 0) {
+      let copiedSB = JSON.parse(JSON.stringify(units[currentTurn]));
+      currentStatBlock = copiedSB;
+      currentStatBlock.index = currentTurn;
+      RenderStatBlock(currentStatBlock);
+    }
 }
 
 function Init() {
@@ -207,9 +228,11 @@ function Init() {
   getMonstersByName(""); // get list of all monsters
   
   if (units.length > 0) {
-    currentStatBlock = units[currentTurn];
+    let copiedSB = JSON.parse(JSON.stringify(units[currentTurn]));
+    currentStatBlock = copiedSB;
+    currentStatBlock.index = 0;
+    RenderStatBlock(currentStatBlock);
   }
-  RenderStatBlock(currentStatBlock);
 }
 
 // Call the displayObjectList function when the page loads

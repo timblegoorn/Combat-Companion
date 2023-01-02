@@ -112,6 +112,80 @@ const challengeRatingXPTable = {
     "30": 155000,
   };
 
+var blankPCStatblock =   {
+    "slug": "customPC",
+    "name": "Player Character",
+    "size": "Medium",
+    "type": "humanoid",
+    "subtype": "human",
+    "group": null,
+    "alignment": "lawful good",
+    "armor_class": 14,
+    "armor_desc": "Natural",
+    "current_hit_points": 32,
+    "hit_points": 32,
+    "hit_dice": "3d12",
+    "speed": {
+        "walk": 30
+    },
+    "strength": 16,
+    "dexterity": 14,
+    "constitution": 14,
+    "intelligence": 8,
+    "wisdom": 10,
+    "charisma": 12,
+    "strength_save": 5,
+    "dexterity_save": null,
+    "constitution_save": 5,
+    "intelligence_save": null,
+    "wisdom_save": null,
+    "charisma_save": null,
+    "perception": null,
+    "skills": {
+        athletics: 5,
+        intimidation: 3,
+        nature: 1,
+        perception: 2,
+        survival: 2
+    },
+    "damage_vulnerabilities": "",
+    "damage_resistances": "",
+    "damage_immunities": "",
+    "condition_immunities": "",
+    "senses": "darkvision 60 ft., passive Perception 9",
+    "languages": "Common, Elvish, Orcish",
+    "challenge_rating": "3",
+    "actions": [
+        {
+            "name": "Glaive",
+            "desc": "Melee Weapon Attack: +5 to hit, reach 10 ft., one target. Hit: 8 (1d10 + 3) slashing damage.",
+        },
+        {
+            "name": "Handaxe",
+            "desc": "Melee/Ranged Weapon Attack: +5 to hit, reach 5/20/60 ft., one target. Hit: 6 (1d6 + 3) slashing damage.",
+        },
+        {
+            "name": "Javelin",
+            "desc": "Melee/Ranged Weapon Attack: +5 to hit, reach 5/30/120 ft., one target. Hit: 6 (1d6 + 3) piercing damage.",
+        },
+    ],
+    "reactions": "",
+    "legendary_desc": "",
+    "legendary_actions": "",
+    "special_abilities": [
+        {
+            "name": "Barbarian Totem Warrior",
+            "desc": "As a totem warrior, the spirit of the wolf courses through you when you rage against your enemies, and you can see through the eyes of beasts."
+        }
+    ],
+    "spell_list": [],
+    "img_main": null,
+    "document__slug": "custom",
+    "document__title": "custom",
+    "document__license_url": "https://github.com/timblegoorn/Combat-Companion",
+    "control_type": "PC"
+}
+
 var blankStatblock = {
   "slug": "monster-identifier",
   "name": "Monster",
