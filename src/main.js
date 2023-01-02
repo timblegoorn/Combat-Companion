@@ -25,7 +25,7 @@ function DisplayUnits() {
 
   const tableTitle = document.createElement('div');
   tableTitle.className = "tableTitle";
-  if (units.length > 0) tableTitle.innerHTML = `<h1>Current Round: ${currentRound}</h1><h2>Current Turn: ${units[currentTurn].name}</h2><button onclick="incrementTurn()">Next Turn</button>`;
+  if (units.length > 0) tableTitle.innerHTML = `<h1>Current Round: ${currentRound}</h1><h2>Current Turn: ${currentTurn + 1} (${units[currentTurn].name})</h2><button onclick="incrementTurn()">Next Turn</button>`;
   else tableTitle.innerHTML = `<h1>Current Round: ${currentRound}</h1><h2>Add Some Units to Get Started!</h2>`;
   objectListDiv.appendChild(tableTitle);
 
@@ -80,7 +80,23 @@ function DisplayUnits() {
         }
       }
       
+      if (columnTitles[i] == "Status Effects") {
+        if (unit[columnTitleSlugs[i]] == undefined) unit[columnTitleSlugs[i]] = {};
+        //if (unit[columnTitleSlugs[i]] == "") dataVal = `<i class="fa-solid fa-plus icon" onclick="EditStatBlock(event, ${j})"></i>`
+        const statusEffectKeys = Object.keys(unit.status_effects);
+        dataVal = "";
+        for (var z = 0; z < statusEffectKeys.length; z++) {
+          if (unit.status_effects[statusEffectKeys[z]] == 0) {
+            dataVal += `<div class="statusEffect">${statusEffectKeys[z]} <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect(${j}, '${statusEffectKeys[z]}')"></i></div>`
+          } else {
+            dataVal += `<div class="statusEffect">${statusEffectKeys[z]} (${unit.status_effects[statusEffectKeys[z]]}) <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect(${j}, '${statusEffectKeys[z]}')"></i></div>`
+          }
+        }
+        
+        dataVal += `<i class="fa-solid fa-plus icon" onclick="AddStatusEffect(${j})"></i>`
+      }
       if (dataVal == undefined) dataVal = `<i class="fa-solid fa-pen-to-square icon" onclick="EditStatBlock(event, ${j})"></i>`;
+
       rowVal.innerHTML = dataVal;
       row.appendChild(rowVal);
     }
@@ -133,6 +149,70 @@ function HandleTableQuickEdit(e) {
     DisplayUnits();
     //document.getElementById(elementID).value = editContent;
   }
+}
+
+function AddStatusEffect(index) {
+  var str = `<br><h1 class='themeDisplay'>Add Status Effect to ${units[index].name}</h1>`;
+
+  str += `
+  <label for="statusEffectSelect">Select Status Effect</label>
+  <select class="statusEffectSelect" name="statusEffectSelect" id="statusEffectSelect" value="Blinded">
+    <option value="Blinded">Blinded</option>
+    <option value="Charmed">Charmed</option>
+    <option value="Deafened">Deafened</option>
+    <option value="Frightened">Frightened</option>
+    <option value="Grappled">Grappled</option>
+    <option value="Incapacitated">Incapacitated</option>
+    <option value="Invisible">Invisible</option>
+    <option value="Paralyzed">Paralyzed</option>
+    <option value="Petrified">Petrified</option>
+    <option value="Poisoned">Poisoned</option>
+    <option value="Prone">Prone</option>
+    <option value="Restrained">Restrained</option>
+    <option value="Stunned">Stunned</option>
+    <option value="Unconscious">Unconscious</option>
+    <option value="Exhaustion">Exhaustion</option>
+  </select>
+  <br>
+  <label for="statusEffectForTurns">Apply Status Effect For How Many Turns? </label>
+  <div class="number-input">
+    <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" id="statusEffectMinus" class="minus"></button>
+    <input type="number" min="0" max="20" class="inlineCustomNumInput" id="statusEffectForTurns" name="selected-current_hit_points" value="${0}">
+    <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" id="statusEffectPlus" class="plus"></button>
+  </div>
+  <br><i>Leave at 0 for indefinite</i>
+  <br><br>
+  <button type="button" onclick="AddSelectedEffect(${index})">Add Status Effect</button>`
+  DisplayPopup(str)
+}
+
+function AddSelectedEffect(index) {
+  const selectedEffect = document.getElementById("statusEffectSelect").value;
+  const forTurns = document.getElementById("statusEffectForTurns").value;
+
+  units[index].status_effects[selectedEffect] = forTurns;
+  DisplayUnits();
+  HidePopup();
+}
+
+function DeleteStatusEffect(index, type) {
+  delete units[index].status_effects[type];
+  DisplayUnits();
+}
+
+function DisplayPopup(str) {
+  var headerContent = `<i class="fa-solid fa-x icon rightCorner" onclick="HidePopup()"></i>`
+
+  document.getElementById("popup").innerHTML = headerContent + str;
+
+  document.getElementById("popupContainer").style.display = "block";
+  document.getElementById("popup").style.display = "block";
+}
+
+function HidePopup(e) {
+  if (e != undefined) e.stopPropagation();
+  document.getElementById("popupContainer").style.display = "none";
+  document.getElementById("popup").style.display = "none";
 }
 
 function incrementTurn() {
