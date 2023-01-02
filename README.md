@@ -1,2 +1,14 @@
-# Combat-Companion
-Combat Companion is a simple web-based app that allows initiative, HP, and round tracking for Dungeons &amp; Dragons
+# Combat Companion - Dungeons & Dragons DM Tool to Track Combat
+Combat Companion is a simple web-based app that allows combat/encounter tracking and features for Dungeons &amp; Dragons
+
+Features include:
+
+- Connected Open5E API to access predefined statblocks. By default, shows all statblocks in alphabetical order, but can also search by keyword.
+- Create your own statblocks for enemies or PCs
+- Initiative tracking
+- Styled display of current combat and recreated statblocks
+- Loading and saving current combat (to local storage)
+- Turn and round tracking
+- Status effect tracking (with optional feature to set status effect for set turns that decrements on each turn)
+- Encounter XP tracking (total available, earned, and amount divided between PCs)
+- Current HP modification
