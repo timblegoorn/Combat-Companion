@@ -419,7 +419,7 @@ var units = [
   {
     "slug": "ulfric",
     "name": "Ulfric",
-    "size": "medium",
+    "size": "Medium",
     "type": "humanoid",
     "subtype": "dwarf",
     "group": null,
@@ -483,7 +483,7 @@ var units = [
     {
         "slug": "leah",
         "name": "Leah",
-        "size": "medium",
+        "size": "Medium",
         "type": "humanoid",
         "subtype": "elf",
         "group": null,
