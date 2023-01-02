@@ -1,185 +1,3 @@
-// Modifier corresponding to ability score from 0-30 (index 0 based, which is never used but there as placeholder)
-const abilityModifierTable = [
-    "-5", "-5", "-4", "-4", "-3", "-3", "-2", "-2",
-    "-1", "-1", "+0", "+0", "+1", "+1", "+2", "+2",
-    "+3", "+3", "+4", "+4", "+5", "+5", "+6", "+6",
-    "+7", "+7", "+8", "+8", "+9", "+9", "+10"
-  ];
-
-const skillList = [
-  "acrobatics", "animal handling", "arcana", "athletics", "deception",
-  "history", "insight", "intimidation", "investigation", "medicine",
-  "nature", "perception", "performance", "persuasion", "religion",
-  "sleight of hand", "stealth", "survival",  
-]
-
-const skillToAbilityTable = {
-  "acrobatics": "dexterity",
-  "animal handling": "wisdom",
-  "arcana": "intelligence",
-  "athletics": "strength",
-  "deception": "charisma",
-  "history": "intelligence",
-  "insight": "wisdom",
-  "intimidation": "charisma",
-  "investigation": "intelligence",
-  "medicine": "wisdom",
-  "nature": "intelligence",
-  "perception": "wisdom",
-  "performance": "charisma",
-  "persuasion": "charisma",
-  "religion": "intelligence",
-  "sleight of hand": "dexterity",
-  "stealth": "dexterity",
-  "survival": "wisdom",
-};
-  
-  // Convert challenge rating to a proficiency bonus
-const challengeRatingProficiencyBonusTable = {
-    "0": 2,
-    "1/8": 2,
-    "1/4": 2,
-    "1/2": 2,
-    "1": 2,
-    "2": 2,
-    "3": 2,
-    "4": 2,
-    "5": 3,
-    "6": 3,
-    "7": 3,
-    "8": 3,
-    "9": 4,
-    "10": 4,
-    "11": 4,
-    "12": 4,
-    "13": 5,
-    "14": 5,
-    "15": 5,
-    "16": 5,
-    "17": 6,
-    "18": 6,
-    "19": 6,
-    "20": 6,
-    "21": 7,
-    "22": 7,
-    "23": 7,
-    "24": 7,
-    "25": 8,
-    "26": 8,
-    "27": 8,
-    "28": 8,
-    "29": 9,
-    "30": 9,
-  };
-
-  // Convert challenge rating to a numerical XP reward
-const challengeRatingXPTable = {
-    "0": 0,
-    "1/8": 25,
-    "1/4": 50,
-    "1/2": 100,
-    "1": 200,
-    "2": 450,
-    "3": 700,
-    "4": 1100,
-    "5": 1800,
-    "6": 2300,
-    "7": 2900,
-    "8": 3900,
-    "9": 5000,
-    "10": 5900,
-    "11": 7200,
-    "12": 8400,
-    "13": 10000,
-    "14": 11500,
-    "15": 13000,
-    "16": 15000,
-    "17": 18000,
-    "18": 20000,
-    "19": 22000,
-    "20": 25000,
-    "21": 33000,
-    "22": 41000,
-    "23": 50000,
-    "24": 62000,
-    "25": 75000,
-    "26": 90000,
-    "27": 105000,
-    "28": 120000,
-    "29": 135000,
-    "30": 155000,
-  };
-
-var blankStatblock = {
-  "slug": "monster-identifier",
-  "name": "Monster",
-  "size": "Medium",
-  "type": "monstrosity",
-  "subtype": "",
-  "group": null,
-  "alignment": "chaotic evil",
-  "armor_class": 15,
-  "armor_desc": "natural armor",
-  "hit_points": 50,
-  "hit_dice": "5d10+25",
-  "speed": {
-      "walk": 30,
-  },
-  "strength": 16,
-  "dexterity": 13,
-  "constitution": 15,
-  "intelligence": 8,
-  "wisdom": 8,
-  "charisma": 7,
-  "strength_save": null,
-  "dexterity_save": null,
-  "constitution_save": null,
-  "intelligence_save": null,
-  "wisdom_save": null,
-  "charisma_save": null,
-  "perception": null,
-  "skills": {},
-  "damage_vulnerabilities": "",
-  "damage_resistances": "",
-  "damage_immunities": "",
-  "condition_immunities": "",
-  "senses": "",
-  "languages": "Common",
-  "challenge_rating": "2",
-  "actions": [
-      {
-          "name": "Multiattack",
-          "desc": "The monster makes two attacks, one bite and one claw attack."
-      },
-      {
-          "name": "Bite",
-          "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 12 (2d6 + 3) piercing damage",
-          "attack_bonus": 3,
-          "damage_dice": "2d6"
-      },
-      {
-          "name": "Claw",
-          "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d4 + 3) slashing damage",
-      }
-  ],
-  "reactions": "",
-  "legendary_desc": "",
-  "legendary_actions": "",
-  "special_abilities": [
-      {
-          "name": "Regeneration",
-          "desc": "The monster regains 5 hit points at the start of its turn."
-      }
-  ],
-  "spell_list": [],
-  "img_main": null,
-  "document__slug": "custom",
-  "document__title": "custom",
-  "document__license_url": "https://github.com/timblegoorn/Combat-Companion"
-};
-
-var currentStatBlock = blankStatblock;
-  
   // Statblock HTML template and CSS provided from: https://codepen.io/retractedhack/pen/gPLpWe
   // Editable stat block contains all possible fields. Final rendered statblock only contains provided information
   function RenderEditableStatBlock(statblock) {
@@ -192,6 +10,7 @@ var currentStatBlock = blankStatblock;
       <div class="section-left">
         <div class="creature-heading">
           <h1><input class="h1Input" type="text" id="statblock-name" name="statblockName" maxlength="40" value="${sb.name}"></h1>
+          <i class="fa-solid fa-floppy-disk icon" onclick="SaveCurrentStatBlock()"></i> Save Statblock
           <h2>
             <select class="statblockSelect italic" name="statblock" id="statblock-size">
               <option value="Tiny">Tiny</option>
@@ -260,7 +79,7 @@ var currentStatBlock = blankStatblock;
                 <i class="fa-solid fa-x solidIcon" onclick="sbRemoveSpeed('${speedType}')"></i> `;
       }
     }
-    str += ` <i class="fa-solid fa-plus solidIcon" onclick="sbAddSpeed()"></i>`
+    str += `<br><i class="fa-solid fa-plus solidIcon" onclick="sbAddSpeed()"></i> Add Speed`
   
     // Base stats
     str += `
@@ -332,7 +151,7 @@ var currentStatBlock = blankStatblock;
             <option value="acrobatics">Acrobatics</option>
             <option value="animal handling">Animal Handling</option>
             <option value="arcana">Arcana</option>
-            <option value="athletics>Athletics</option>
+            <option value="athletics">Athletics</option>
             <option value="deception">Deception</option>
             <option value="history">History</option>
             <option value="insight">Insight</option>
@@ -349,9 +168,10 @@ var currentStatBlock = blankStatblock;
             <option value="survival">Survival</option>
           </select>`
            str += `
+           EXPERT: <input type="checkbox" id="statblockSkillTypeExpert-${skill}" name="statblockSkillTypeExpert-${skill}">
             <i class="fa-solid fa-x solidIcon" onclick="sbRemoveSkill('${skill}')"></i> `;
         }
-        if (numSkills < 18) str += ` <i class="fa-solid fa-plus solidIcon" onclick="sbAddSkill()"></i>`
+        if (numSkills < 18) str += `<br><i class="fa-solid fa-plus solidIcon" onclick="sbAddSkill()"></i> Add Skill Proficiency`
         str += `</p>
           </div> <!-- property line -->`;
 
@@ -398,6 +218,7 @@ var currentStatBlock = blankStatblock;
         </div> <!-- property line -->`;
   
         // Challenge Rating + XP
+        if (sb.control_type == undefined || sb.control_type == 'enemy') {
         str+= `
           <div class="property-line last">
             <h4>Challenge </h4>
@@ -438,60 +259,75 @@ var currentStatBlock = blankStatblock;
               <option value="30">30</option>
             </select>
             <p>(<span id="statblock-challenge_ratingXP">${challengeRatingXPTable[sb.challenge_rating]}</span> XP) <b>Proficiency</b> +<span id="statblock-challenge_ratingProficiency">${challengeRatingProficiencyBonusTable[sb.challenge_rating]}</span></p>
-          </div> <!-- property line -->
+          </div> <!-- property line -->`
+        }
+        str += `
           <svg height="5" width="100%" class="tapered-rule">
             <polyline points="0,0 400,2.5 0,5"></polyline>
           </svg>
         </div> <!-- top stats -->`;
   
         // Special Abilities
-        if (sb.special_abilities.length > 0) {
-          for (let specialAbility of sb.special_abilities) {
-            str+= `
-            <div class="property-block spanOnce">
-              <h4>${specialAbility.name}. </h4>
-              <p>${specialAbility.desc.replaceAll("\n", "<br>")}</p>
-            </div> <!-- property block -->`;
-          }
+        for (var i = 0; i < sb.special_abilities.length; i++) {
+          var specialAbility = sb.special_abilities[i];
+          str+= `
+          <div class="property-block spanOnce">
+            <h4><span class="statblockTextInput" id="statblockSpecialAbilityName-${i}" contenteditable="true">${specialAbility.name}</span> </h4><i class="fa-solid fa-x solidIcon" onclick="sbRemoveSA('${i}')"></i><br>
+            <p><span class="statblockTextInput" id="statblockSpecialAbilityDesc-${i}" contenteditable="true">${specialAbility.desc.replaceAll("\n", "<br>")}</span></p>
+          </div> <!-- property block -->`;
+          str += ` `;
         }
+        str += `<br><i class="fa-solid fa-plus solidIcon" onclick="sbAddSA()"></i> Add Special Ability`;
+        str += `<br><i class="fa-solid fa-plus solidIcon" onclick="sbAddSASpell()"></i> Add Spellcasting`;
         str+= `
       </div> <!-- section left -->
       <div class="section-right">`;
       
       // actions
-      if (sb.actions.length > 0) {
-          str += `
-            <div class="actions">
-              <h3>Actions</h3>`;
-          for (let action of sb.actions) {
-            str+= `
-            <div class="property-block spanOnce">
-              <h4>${action.name}. </h4>
-              <p>${action.desc}</p>
-            </div> <!-- property block -->`;
-          }
-          str += `
-            </div> <!-- actions -->`
-      }  
+      str += `
+      <div class="actions">
+        <h3>Actions</h3>`;
+      for (var i = 0; i < sb.actions.length; i++) {
+        var action = sb.actions[i];
+        str+= `
+        <div class="property-block spanOnce">
+          <h4><span class="statblockTextInput" id="statblockActionName-${i}" contenteditable="true">${action.name}</span> </h4><i class="fa-solid fa-x solidIcon" onclick="sbRemoveAction('${i}')"></i><br>
+          <p><span class="statblockTextInput" id="statblockActionDesc-${i}" contenteditable="true">${action.desc}</span></p>
+        </div> <!-- property block -->`;
+        str += ` `;
+      }
+      str += `<br><i class="fa-solid fa-plus solidIcon" onclick="sbAddAction()"></i> Add Action`;
+      str += `</div> <!-- actions -->`      
 
       // Legendary actions
-      if (sb.legendary_actions.length > 0) {
+      str += `
+        <div class="actions">
+          <h3>Legendary Actions</h3>`;
+
+      if (sb.legendary_desc == "") {
         str += `
-          <div class="actions">
-            <h3>Legendary Actions</h3>
-            <div class="property-block spanOnce">
-              <p>${sb.legendary_desc}.</p>
+            <div class="property-block spanOnce first">
+              <p><i class="fa-solid fa-plus solidIcon" onclick="sbAddLegendaryDescription()"></i> Add Legendary Description</p>
             </div> <!-- property block -->`;
-        for (let action of sb.legendary_actions) {
-          str+= `
-          <div class="property-block spanOnce">
-            <h4>${action.name}. </h4>
-            <p>${action.desc}</p>
-          </div> <!-- property block -->`;
-        }
+      } else {
         str += `
-          </div> <!-- legendary actions -->`
-      } 
+            <div class="property-block spanOnce first">
+              <h4>Legendary Description </h4><i class="fa-solid fa-x solidIcon" onclick="sbRemoveLegendaryDescription()"></i><br>
+              <p><span class="statblockTextInput" id="statblockLegendaryDescription-legendary_desc" contenteditable="true">${sb.legendary_desc}</span></p>
+            </div> <!-- property block -->`;
+      }
+      for (var i = 0; i < sb.legendary_actions.length; i++) {
+        var action = sb.legendary_actions[i];
+        str+= `
+        <div class="property-block spanOnce">
+          <h4><span class="statblockTextInput" id="statblockLegendaryActionName-${i}" contenteditable="true">${action.name}</span> </h4>
+          <i class="fa-solid fa-x solidIcon" onclick="sbRemoveLegendaryAction('${i}')"></i><br>
+          <p><span class="statblockTextInput" id="statblockLegendaryActionDesc-${i}" contenteditable="true">${action.desc}</span></p>
+        </div> <!-- property block -->`;
+      }
+      str += `<br><i class="fa-solid fa-plus solidIcon" onclick="sbAddLegendaryAction()"></i> Add Legendary Action`;
+      str += `
+        </div> <!-- legendary actions -->`
           str += `
       </div> <!-- section right -->
       <hr class="orange-border bottom" />
@@ -504,7 +340,7 @@ var currentStatBlock = blankStatblock;
     document.getElementById("statblock-size").value = sb.size;
     document.getElementById("statblock-type").value = sb.type;
     document.getElementById("statblock-alignment").value = sb.alignment;
-    document.getElementById("statblock-challenge_rating").value = sb.challenge_rating
+    if (sb.control_type == undefined || sb.control_type == 'enemy') document.getElementById("statblock-challenge_rating").value = sb.challenge_rating
 
     for (const skill in sb.skills) {
       document.getElementById(`statblockSkillType-${skill}`).value = skill;
@@ -519,6 +355,7 @@ var currentStatBlock = blankStatblock;
     var elementID = e.target.id;
     var editContent, newKey, oldKey;
     console.log(e.target.id)
+    // Get edit content if in a span or input element
     if (e.target.value == undefined) {
       editContent = e.target.innerHTML;
       console.log(e.target.innerHTML)
@@ -527,6 +364,7 @@ var currentStatBlock = blankStatblock;
       console.log(e.target.value)
     }
 
+    // Certain edits require specific actions, so type is checked
     if (elementID.includes("statblockSpeedType")) {
       oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
       newKey = editContent;
@@ -560,22 +398,51 @@ var currentStatBlock = blankStatblock;
       } else {
         currentStatBlock[oldKey] = null;
       }
+    } else if (elementID.includes("SkillTypeExpert")) {
+      oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      if (document.getElementById(elementID).checked) {
+        currentStatBlock.skills[oldKey] = parseInt(abilityModifierTable[currentStatBlock[skillToAbilityTable[oldKey]]]) + (challengeRatingProficiencyBonusTable[currentStatBlock.challenge_rating] * 2);
+      } else {
+        currentStatBlock.skills[oldKey] = parseInt(abilityModifierTable[currentStatBlock[skillToAbilityTable[oldKey]]]) + (challengeRatingProficiencyBonusTable[currentStatBlock.challenge_rating]);
+      }
     } else if (elementID.includes("SkillType")) {
       oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
       newKey = editContent;
       if (oldKey == newKey) return;
       if (currentStatBlock.skills[newKey] == undefined) {
-        currentStatBlock.skills[newKey] = parseInt(abilityModifierTable[currentStatBlock[skillToAbilityTable[newKey]]]) + challengeRatingProficiencyBonusTable[currentStatBlock.challenge_rating];
+        if (document.getElementById(`statblockSkillTypeExpert-${oldKey}`).checked) {
+          currentStatBlock.skills[oldKey] = parseInt(abilityModifierTable[currentStatBlock[skillToAbilityTable[oldKey]]]) + (challengeRatingProficiencyBonusTable[currentStatBlock.challenge_rating] * 2);
+        } else {
+          currentStatBlock.skills[oldKey] = parseInt(abilityModifierTable[currentStatBlock[skillToAbilityTable[oldKey]]]) + (challengeRatingProficiencyBonusTable[currentStatBlock.challenge_rating]);
+        }
         delete currentStatBlock.skills[oldKey];
         document.getElementById(elementID).id = `statblockSkillType-${newKey}`;
+        document.getElementById(`statblockSkillTypeExpert-${oldKey}`).id = `statblockSkillTypeExpert-${newKey}`;
       } else {
         document.getElementById(elementID).value = oldKey;
       }
+    } else if (elementID.includes("statblockSpecialAbilityName")) {
+      oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      currentStatBlock.special_abilities[oldKey].name = editContent;
+    } else if (elementID.includes("statblockSpecialAbilityDesc")) {
+      oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      currentStatBlock.special_abilities[oldKey].desc = editContent;
+    } else if (elementID.includes("statblockActionName")) {
+      oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      currentStatBlock.actions[oldKey].name = editContent;
+    } else if (elementID.includes("statblockActionDesc")) {
+      oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      currentStatBlock.actions[oldKey].desc = editContent;
+    } else if (elementID.includes("statblockLegendaryActionName")) {
+      oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      currentStatBlock.legendary_actions[oldKey].name = editContent;
+    } else if (elementID.includes("statblockLegendaryActionDesc")) {
+      oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
+      currentStatBlock.legendary_actions[oldKey].desc = editContent;
     } else {
       oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
       currentStatBlock[oldKey] = editContent;
     }
-
     //RenderEditableStatBlock(currentStatBlock);
   }
   
@@ -589,6 +456,9 @@ var currentStatBlock = blankStatblock;
       <div class="section-left">
         <div class="creature-heading">
           <h1>${sb.name}</h1>
+          <i class="fa-solid fa-pen-to-square icon" onclick="EditCurrentStatBlock()"></i> Edit Statblock
+          <br>
+          <i class="fa-solid fa-plus icon" onclick="AddCurrentStatBlockToCombat()"></i> Add to Combat
           <h2>${sb.size} ${sb.type}, ${sb.alignment}</h2>
         </div> <!-- creature heading -->
         <svg height="5" width="100%" class="tapered-rule">
@@ -798,7 +668,7 @@ var currentStatBlock = blankStatblock;
           <div class="actions">
             <h3>Legendary Actions</h3>
             <div class="property-block spanOnce">
-              <p>${sb.legendary_desc}.</p>
+              <p>${sb.legendary_desc}</p>
             </div> <!-- property block -->`;
         for (let action of sb.legendary_actions) {
           str+= `
@@ -842,4 +712,107 @@ var currentStatBlock = blankStatblock;
   function sbRemoveSkill(skill) {
     delete currentStatBlock.skills[skill];
     RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function sbAddSA() {
+    var newSpecialAbility = {
+      "name": "New Special Ability",
+      "desc": "Special ability description"
+    }
+    currentStatBlock.special_abilities.push(newSpecialAbility);
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function sbAddSASpell() {
+    var spellSaveDC = 8 + parseInt(abilityModifierTable[currentStatBlock.intelligence]) + parseInt(challengeRatingProficiencyBonusTable[currentStatBlock.challenge_rating]);
+    var spellAttack = spellSaveDC - 8;
+    var newSpecialAbility = {
+      "name": "Spellcasting",
+      "desc": `The ${currentStatBlock.name} is a 3rd level spell caster. its spell casting ability is Intelligence 
+      (spell save DC ${spellSaveDC}, +${spellAttack} to hit with spell attacks). The ${currentStatBlock.name} has the following spells prepared:
+      
+      -Cantrips (at will): mage hand, prestidigtation
+      
+      -1st level (3 slots): detect magic, magic missile
+      
+      -2nd level (1 slot): invisibility`
+    }
+    currentStatBlock.special_abilities.push(newSpecialAbility);
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function sbRemoveSA(specialAbility) {
+    currentStatBlock.special_abilities.splice(specialAbility, 1);
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function sbAddAction() {
+    var tempMod = parseInt(abilityModifierTable[currentStatBlock.strength]) + challengeRatingProficiencyBonusTable[currentStatBlock.challenge_rating];
+    var newAction = {
+      "name": "New Action",
+      "desc": `Melee Weapon Attack: +${tempMod} to hit, reach 5ft., one target. Hit: 10 (2d6 + 3) slashing damage.`
+    }
+    currentStatBlock.actions.push(newAction);
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function sbRemoveAction(action) {
+    currentStatBlock.actions.splice(action, 1);
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function sbRemoveLegendaryDescription() {
+    currentStatBlock.legendary_desc = "";
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function sbAddLegendaryDescription() {
+    var defaultLegendaryDescription = `The ${currentStatBlock.name} can take 3 legendary actions, choosing from the options below. 
+    Only one legendary action option can be used at a time and only at the end of another creature's turn. 
+    The ${currentStatBlock.name} regains spent legendary actions at the start of its turn.`;
+
+    currentStatBlock.legendary_desc = defaultLegendaryDescription;
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function sbAddLegendaryAction() {
+    var newAction = {
+      "name": "Bite Attack",
+      "desc": `The ${currentStatBlock.name} makes a bite attack.`
+    }
+    if (currentStatBlock.legendary_actions == "") currentStatBlock.legendary_actions = [];
+    currentStatBlock.legendary_actions.push(newAction);
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function sbRemoveLegendaryAction(action) {
+    currentStatBlock.legendary_actions.splice(action, 1);
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function EditCurrentStatBlock() {
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function EditStatBlock(index) {
+    currentStatBlock = units[index];
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  function ViewStatBlock(index) {
+    currentStatBlock = units[index];
+    RenderStatBlock(currentStatBlock);
+  }
+
+  function SaveCurrentStatBlock() {
+    RenderStatBlock(currentStatBlock);
+  }
+
+  function AddCurrentStatBlockToCombat() {
+    // Get the value of the input field
+    var initiative = Math.floor(Math.random() * 20) + 1 + parseInt(abilityModifierTable[currentStatBlock.dexterity]);
+    currentStatBlock.initiative = initiative;
+    units.push(currentStatBlock);
+    DisplayUnits();
+    return false;  
   }
