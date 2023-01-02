@@ -229,7 +229,17 @@ function incrementTurn() {
     return;
   }
 
-  RenderStatBlock(units[currentTurn]);
+  for(var statusEffect in units[currentTurn].status_effects){
+    if (units[currentTurn].status_effects[statusEffect] > 0) {
+      units[currentTurn].status_effects[statusEffect]--;
+      if (units[currentTurn].status_effects[statusEffect] == 0) delete units[currentTurn].status_effects[statusEffect];
+    }
+  }
+
+  let copiedSB = JSON.parse(JSON.stringify(units[currentTurn]));
+  currentStatBlock = copiedSB;
+  currentStatBlock.index = currentTurn;
+  RenderStatBlock(currentStatBlock);
   DisplayUnits();
 }
 

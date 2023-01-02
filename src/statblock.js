@@ -844,7 +844,7 @@
   function AddCurrentStatBlockToCombat() {
     // Get the value of the input field
     if (document.getElementById("statblock-initiative").value == '') var initiative = Math.floor(Math.random() * 20) + 1 + parseInt(abilityModifierTable[currentStatBlock.dexterity]);
-    else var initiative = document.getElementById(statblock-initiative).value
+    else var initiative = document.getElementById("statblock-initiative").value
 
     if (currentStatBlock.current_hit_points == undefined) currentStatBlock.current_hit_points = currentStatBlock.hit_points;
     if (currentStatBlock.control_type == undefined) currentStatBlock.control_type = "Enemy";
