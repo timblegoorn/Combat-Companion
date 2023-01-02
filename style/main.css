@@ -13,6 +13,7 @@
   --themeRedLessPop: #e94445;
   --themeBlue: #264c5e;
   --themeRedMuted: #a34c50;
+  --themeRedMutedLess: #c2595e;
   --themeOffWhite: #cec2ae;
   --themeRedDark: #4a2932;
 }
@@ -101,7 +102,6 @@ body {
 }
 
 .icon:hover, .solidIcon:hover {
-  text-decoration: underline;
   cursor: pointer;
 }
 
@@ -144,6 +144,46 @@ body {
 #searchResults {
   height: calc(100% - 21px);
   overflow-y: auto;
+}
+
+table, th, td {
+  color: #922610;
+}
+
+table {
+  border-collapse: collapse;
+  text-align: left;
+  user-select: none;
+}
+
+th {
+  background-color: #FDF1DC;
+  font-family: 'Libre Baskerville', 'Lora', 'Calisto MT', 'Bookman Old Style', Bookman, 'Goudy Old Style', Garamond, 'Hoefler Text', 'Bitstream Charter', Georgia, serif !important;
+  font-size: 23px;
+  line-height: 1.2em;
+  margin: 10px 0 0;
+  letter-spacing: 1px;
+  font-variant: small-caps;
+  font-weight: bold;
+  cursor: default;
+}
+
+tr {
+  background-color: white;
+  border-bottom: 1px solid black;
+}
+
+tr:nth-child(odd) {
+  background-color: #FDF1DC;
+}
+
+tr:hover {
+  background-color: #fadca9;
+  cursor: pointer;
+}
+
+#initiativeTable {
+  width: 100%;
 }
 
 .unit {

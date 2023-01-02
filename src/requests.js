@@ -91,7 +91,7 @@ function ClickSearchedItem(id) {
 
   if (foundMonster != undefined) {
     currentStatBlock = foundMonster;
-    RenderEditableStatBlock(foundMonster);
-    //RenderStatBlock(foundMonster);
+    //RenderEditableStatBlock(foundMonster);
+    RenderStatBlock(foundMonster);
   }
 }

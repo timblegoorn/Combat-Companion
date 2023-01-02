@@ -36,6 +36,7 @@ body {
     font-variant: small-caps;
     font-weight: bold;
     border: 1px dotted black;
+    margin-bottom: 5px;
 }
 
 .statblockSelect {
@@ -80,6 +81,9 @@ body {
   float: right;
 }
 
+.statblockEditButton {
+}
+
 .spanOnce {
   page-break-inside: avoid;           /* Theoretically FF 20+ */
   break-inside: avoid-column;         /* Chrome, Safari, IE 11 */
@@ -100,6 +104,7 @@ body {
     padding: 5px 10px 20px;
     box-shadow: 0 0 1.5em #867453;
     column-count: 2;
+    position: relative;
   }
   .stat-block.wide{
     width: 46.5%;
