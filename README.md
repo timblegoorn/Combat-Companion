@@ -12,3 +12,5 @@ Features include:
 - Status effect tracking (with optional feature to set status effect for set turns that decrements on each turn)
 - Encounter XP tracking (total available, earned, and amount divided between PCs)
 - Current HP modification
+
+![image](https://user-images.githubusercontent.com/43420737/210283042-2cf742ea-5be0-463b-b01f-f89ca0e46ec0.png)
