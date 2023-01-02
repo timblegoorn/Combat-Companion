@@ -25,9 +25,11 @@
               <br>
             </div>
           </form> 
+          <div class="orange-border-table"></div>
           <div id="searchResults" onscroll="ScrollSearchResults(event);">
 
           </div>
+          <div class="orange-border-table"></div>
         </div>
         <div class="divInlineBlocks" id="addContainer">
           <button onclick="">Add Basic Unit</button><button onclick="">Add PC</button><button onclick="">Statblock Editor</button>
@@ -51,8 +53,9 @@
         -->
         </div>
       </div>
-      <button type="button" onclick="SaveGame()">Save Current Combat</button>
-      <button type="button" onclick="LoadGame()">Load Saved Combat</button>
+      <button type="button" onclick="SaveGame()">Save Current Combat</button><button type="button" onclick="LoadGame()">Load Last Saved Combat</button>
+    
+
     </div>
     <br>
     <div id="list" class="divBlocks"></div>

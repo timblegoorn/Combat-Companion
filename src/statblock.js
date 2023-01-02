@@ -10,7 +10,11 @@
       <div class="section-left">
         <div class="creature-heading">
           <h1><input class="h1Input" type="text" id="statblock-name" name="statblockName" maxlength="40" value="${sb.name}"></h1>
-          <i class="fa-solid fa-floppy-disk icon" onclick="SaveCurrentStatBlock()"></i> Save Statblock
+          <i class="fa-solid fa-floppy-disk icon" onclick="SaveCurrentStatBlock()"></i> Save Statblock`;
+        if (sb.control_type == 'PC') {
+          str += `<h2>Player Character</h2>`
+        }
+        str += `
           <h2>
             <select class="statblockSelect italic" name="statblock" id="statblock-size">
               <option value="Tiny">Tiny</option>
@@ -218,7 +222,7 @@
         </div> <!-- property line -->`;
   
         // Challenge Rating + XP
-        if (sb.control_type == undefined || sb.control_type == 'enemy') {
+        if (sb.control_type == undefined || sb.control_type == 'Enemy') {
         str+= `
           <div class="property-line last">
             <h4>Challenge </h4>
@@ -300,35 +304,38 @@
       str += `</div> <!-- actions -->`      
 
       // Legendary actions
-      str += `
-        <div class="actions">
-          <h3>Legendary Actions</h3>`;
+      if (sb.control_type == undefined || sb.control_type == 'Enemy') {
+        str += `
+          <div class="actions">
+            <h3>Legendary Actions</h3>`;
 
-      if (sb.legendary_desc == "") {
-        str += `
-            <div class="property-block spanOnce first">
-              <p><i class="fa-solid fa-plus solidIcon" onclick="sbAddLegendaryDescription()"></i> Add Legendary Description</p>
-            </div> <!-- property block -->`;
-      } else {
-        str += `
-            <div class="property-block spanOnce first">
-              <h4>Legendary Description </h4><i class="fa-solid fa-x solidIcon" onclick="sbRemoveLegendaryDescription()"></i><br>
-              <p><span class="statblockTextInput" id="statblockLegendaryDescription-legendary_desc" contenteditable="true">${sb.legendary_desc}</span></p>
-            </div> <!-- property block -->`;
-      }
-      for (var i = 0; i < sb.legendary_actions.length; i++) {
-        var action = sb.legendary_actions[i];
-        str+= `
-        <div class="property-block spanOnce">
-          <h4><span class="statblockTextInput" id="statblockLegendaryActionName-${i}" contenteditable="true">${action.name}</span> </h4>
-          <i class="fa-solid fa-x solidIcon" onclick="sbRemoveLegendaryAction('${i}')"></i><br>
-          <p><span class="statblockTextInput" id="statblockLegendaryActionDesc-${i}" contenteditable="true">${action.desc}</span></p>
-        </div> <!-- property block -->`;
-      }
-      str += `<br><i class="fa-solid fa-plus solidIcon" onclick="sbAddLegendaryAction()"></i> Add Legendary Action`;
-      str += `
-        </div> <!-- legendary actions -->`
+        if (sb.legendary_desc == "") {
           str += `
+              <div class="property-block spanOnce first">
+                <p><i class="fa-solid fa-plus solidIcon" onclick="sbAddLegendaryDescription()"></i> Add Legendary Description</p>
+              </div> <!-- property block -->`;
+        } else {
+          str += `
+              <div class="property-block spanOnce first">
+                <h4>Legendary Description </h4><i class="fa-solid fa-x solidIcon" onclick="sbRemoveLegendaryDescription()"></i><br>
+                <p><span class="statblockTextInput" id="statblockLegendaryDescription-legendary_desc" contenteditable="true">${sb.legendary_desc}</span></p>
+              </div> <!-- property block -->`;
+        }
+        for (var i = 0; i < sb.legendary_actions.length; i++) {
+          var action = sb.legendary_actions[i];
+          str+= `
+          <div class="property-block spanOnce">
+            <h4><span class="statblockTextInput" id="statblockLegendaryActionName-${i}" contenteditable="true">${action.name}</span> </h4>
+            <i class="fa-solid fa-x solidIcon" onclick="sbRemoveLegendaryAction('${i}')"></i><br>
+            <p><span class="statblockTextInput" id="statblockLegendaryActionDesc-${i}" contenteditable="true">${action.desc}</span></p>
+          </div> <!-- property block -->`;
+        }
+        str += `<br><i class="fa-solid fa-plus solidIcon" onclick="sbAddLegendaryAction()"></i> Add Legendary Action`;
+        str += `
+          </div> <!-- legendary actions -->`
+            
+      }
+      str += `
       </div> <!-- section right -->
       <hr class="orange-border bottom" />
     </div> <!-- stat block -->`;
@@ -340,7 +347,7 @@
     document.getElementById("statblock-size").value = sb.size;
     document.getElementById("statblock-type").value = sb.type;
     document.getElementById("statblock-alignment").value = sb.alignment;
-    if (sb.control_type == undefined || sb.control_type == 'enemy') document.getElementById("statblock-challenge_rating").value = sb.challenge_rating
+    if (sb.control_type == undefined || sb.control_type == 'Enemy') document.getElementById("statblock-challenge_rating").value = sb.challenge_rating
 
     for (const skill in sb.skills) {
       document.getElementById(`statblockSkillType-${skill}`).value = skill;
@@ -458,8 +465,15 @@
           <h1>${sb.name}</h1>
           <i class="fa-solid fa-pen-to-square icon" onclick="EditCurrentStatBlock()"></i> Edit Statblock
           <br>
-          <i class="fa-solid fa-plus icon" onclick="AddCurrentStatBlockToCombat()"></i> Add to Combat
-          <h2>${sb.size} ${sb.type}, ${sb.alignment}</h2>
+          <i class="fa-solid fa-plus icon" onclick="AddCurrentStatBlockToCombat()"></i> Add to Combat`;
+        if (sb.control_type == undefined || sb.control_type == 'Enemy') {
+          str += `
+          <h2>${sb.size} ${sb.type}, ${sb.alignment}</h2>`;
+        } else {
+          str += `
+          <h2>${sb.size} ${sb.type}, ${sb.alignment} (Player Character)</h2>`;
+        }
+        str += `
         </div> <!-- creature heading -->
         <svg height="5" width="100%" class="tapered-rule">
           <polyline points="0,0 400,2.5 0,5"></polyline>
@@ -622,15 +636,18 @@
           </div> <!-- property line -->`;
 
         // Challenge Rating + XP
-        str+= `
-          <div class="property-line first">
-            <h4>Challenge </h4>
-            <p>${sb.challenge_rating} (${challengeRatingXPTable[sb.challenge_rating]} XP) <span class="floatRight"><b>Proficiency</b> +${challengeRatingProficiencyBonusTable[sb.challenge_rating]}</span></p>
-          </div> <!-- property line -->
-          <svg height="5" width="100%" class="tapered-rule">
-            <polyline points="0,0 400,2.5 0,5"></polyline>
-          </svg>
-        </div> <!-- top stats -->`
+        if (sb.control_type == undefined || sb.control_type == 'Enemy') {
+          str+= `
+            <div class="property-line first">
+              <h4>Challenge </h4>
+              <p>${sb.challenge_rating} (${challengeRatingXPTable[sb.challenge_rating]} XP) <span class="floatRight"><b>Proficiency</b> +${challengeRatingProficiencyBonusTable[sb.challenge_rating]}</span></p>
+            </div> <!-- property line -->`;
+        }
+          str += `
+            <svg height="5" width="100%" class="tapered-rule">
+              <polyline points="0,0 400,2.5 0,5"></polyline>
+            </svg>
+          </div> <!-- top stats -->`
   
         // Special Abilities
         if (sb.special_abilities.length > 0) {
@@ -794,14 +811,17 @@
     RenderEditableStatBlock(currentStatBlock);
   }
 
-  function EditStatBlock(index) {
+  function EditStatBlock(e, index) {
     currentStatBlock = units[index];
     RenderEditableStatBlock(currentStatBlock);
   }
 
-  function ViewStatBlock(index) {
-    currentStatBlock = units[index];
-    RenderStatBlock(currentStatBlock);
+  function ViewStatBlock(e, index) {
+    // prevent parent event propagation
+    if (e.target.className == "") {
+      currentStatBlock = units[index];
+      RenderStatBlock(currentStatBlock);
+    }
   }
 
   function SaveCurrentStatBlock() {
