@@ -87,18 +87,24 @@ function DisplayUnits() {
       
       if (columnTitles[i] == "Status Effects") {
         if (unit[columnTitleSlugs[i]] == undefined) unit[columnTitleSlugs[i]] = {};
-        //if (unit[columnTitleSlugs[i]] == "") dataVal = `<i class="fa-solid fa-plus icon" onclick="EditStatBlock(event, ${j})"></i>`
-        const statusEffectKeys = Object.keys(unit.status_effects);
-        dataVal = "";
-        for (var z = 0; z < statusEffectKeys.length; z++) {
-          if (unit.status_effects[statusEffectKeys[z]] == 0) {
-            dataVal += `<div class="statusEffect">${statusEffectKeys[z]} <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect('${unit.id}', '${statusEffectKeys[z]}')"></i></div>`
-          } else {
-            dataVal += `<div class="statusEffect">${statusEffectKeys[z]} (${unit.status_effects[statusEffectKeys[z]]}) <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect('${unit.id}', '${statusEffectKeys[z]}')"></i></div>`
+        if ((unit.control_type == "PC" && unit.dead) || (unit.control_type != "PC" && unit.current_hit_points == 0)) dataVal = "";
+        else {
+          const statusEffectKeys = Object.keys(unit.status_effects);
+          dataVal = "";
+          for (var z = 0; z < statusEffectKeys.length; z++) {
+            if (unit.status_effects[statusEffectKeys[z]] == 0) {
+              dataVal += `<div class="statusEffect">${statusEffectKeys[z]} <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect('${unit.id}', '${statusEffectKeys[z]}')"></i></div>`
+            } else {
+              dataVal += `<div class="statusEffect">${statusEffectKeys[z]} (${unit.status_effects[statusEffectKeys[z]]}) <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect('${unit.id}', '${statusEffectKeys[z]}')"></i></div>`
+            }
+          }
+          
+          dataVal += `<span class="icon text" onclick="AddStatusEffect('${unit.id}')"><i class="fa-solid fa-plus icon"></i> Add Effect</span>`
+
+          if (unit.control_type == "PC" && unit.current_hit_points == 0) {
+            dataVal = `<div class="statusEffect">Unconscious</div>`
           }
         }
-        
-        dataVal += `<span class="icon text" onclick="AddStatusEffect('${unit.id}')"><i class="fa-solid fa-plus icon"></i> Add Effect</span>`
       }
       if (dataVal == undefined) dataVal = `<i class="fa-solid fa-pen-to-square icon" onclick="EditStatBlock(event, '${unit.id}')"></i>`;
 
@@ -349,6 +355,19 @@ function AddDeathSave(id, amount) {
   }
 }
 
+function ResetDeathSaves(id, type) {
+  let arrIndex = units.findIndex(unit => unit.id === id);
+  if (arrIndex < 0) return;
+
+  if (type) {
+    units[arrIndex].death_saves_failed = 0;
+  } else {
+    units[arrIndex].death_saves_succeeded = 0;
+  }
+
+  RenderUnit(id);
+}
+
 function RenderUnit(id) {
   let arrIndex = units.findIndex(unit => unit.id === id);
   if (arrIndex < 0) return;
@@ -357,7 +376,17 @@ function RenderUnit(id) {
   var str = `
     <div class="quickInfoContainer">
     <hr class="orange-border top" />
-    <h1>${sb.name}</h1>
+    <h1>${sb.name}</h1>`
+  if (sb.control_type == "PC" && sb.death_saves_failed != undefined) {
+    str += `<h2>`
+    if (sb.death_saves_failed > 0 || sb.current_hit_points == 0)
+      str += `Failed Death Saves: ${sb.death_saves_failed} <i class="fa-solid fa-arrow-rotate-left icon" onclick="ResetDeathSaves('${id}',true)"></i> `;
+    if (sb.current_hit_points == 0)
+      str += `Successful Saves: ${sb.death_saves_succeeded} <i class="fa-solid fa-arrow-rotate-left icon" onclick="ResetDeathSaves('${id}',false)"></i>`;
+    str += `</h2>`;
+  }
+
+  str += `
     <h2> Current HP ${sb.current_hit_points}/${sb.hit_points}</h2>
     <button type="button" onclick="HealUnit('${sb.id}')">Heal</button>
     <div class="number-input big">
