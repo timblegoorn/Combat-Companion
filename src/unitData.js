@@ -530,7 +530,7 @@ var units = [
     "condition_immunities": "",
     "senses": "darkvision 60 ft., passive Perception 9",
     "languages": "Common, Dwarven",
-    "challenge_rating": "1/4",
+    "challenge_rating": "3",
     "actions": [
         {
             "name": "Warhammer",
@@ -595,7 +595,7 @@ var units = [
         "condition_immunities": "",
         "senses": "darkvision 60 ft., passive Perception 9",
         "languages": "Common, Dwarven",
-        "challenge_rating": "1/4",
+        "challenge_rating": "3",
         "actions": [
             {
                 "name": "Warhammer",

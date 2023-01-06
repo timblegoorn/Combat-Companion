@@ -86,7 +86,7 @@
                 <i class="fa-solid fa-x solidIcon" onclick="sbRemoveSpeed('${speedType}')"></i> `;
       }
     }
-    str += `<br><i class="fa-solid fa-plus solidIcon" onclick="sbAddSpeed()"></i> Add Speed`
+    str += `<br><span class="icon text" onclick="sbAddSpeed()"><i class="fa-solid fa-plus solidIcon" ></i> Add Speed</span>`
   
     // Base stats
     str += `
@@ -178,7 +178,7 @@
            EXPERT: <input type="checkbox" id="statblockSkillTypeExpert-${skill}" name="statblockSkillTypeExpert-${skill}">
             <i class="fa-solid fa-x solidIcon" onclick="sbRemoveSkill('${skill}')"></i> `;
         }
-        if (numSkills < 18) str += `<br><i class="fa-solid fa-plus solidIcon" onclick="sbAddSkill()"></i> Add Skill Proficiency`
+        if (numSkills < 18) str += `<br><span class="icon text" onclick="sbAddSkill()"><i class="fa-solid fa-plus solidIcon" onclick="sbAddSkill()"></i> Add Skill Proficiency</span>`
         str += `</p>
           </div> <!-- property line -->`;
 
@@ -267,6 +267,34 @@
             </select>
             <p>(<span id="statblock-challenge_ratingXP">${challengeRatingXPTable[sb.challenge_rating]}</span> XP) <b>Proficiency</b> +<span id="statblock-challenge_ratingProficiency">${challengeRatingProficiencyBonusTable[sb.challenge_rating]}</span></p>
           </div> <!-- property line -->`
+        } else if (sb.control_type == 'PC') {
+          str+= `
+          <div class="property-line last">
+            <h4>Level </h4>
+            <select class="statblockSelect" name="statblock-challenge_rating" id="statblock-challenge_rating">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+              <option value="20">20</option>
+            </select>
+            <p><b>Proficiency Bonus</b> +<span id="statblock-challenge_ratingProficiency">${challengeRatingProficiencyBonusTable[sb.challenge_rating]}</span></p>
+          </div> <!-- property line -->`
         }
         str += `
           <svg height="5" width="100%" class="tapered-rule">
@@ -284,8 +312,8 @@
           </div> <!-- property block -->`;
           str += ` `;
         }
-        str += `<br><i class="fa-solid fa-plus solidIcon" onclick="sbAddSA()"></i> Add Special Ability`;
-        str += `<br><i class="fa-solid fa-plus solidIcon" onclick="sbAddSASpell()"></i> Add Spellcasting`;
+        str += `<br><span class="icon text" onclick="sbAddSA()"><i class="fa-solid fa-plus solidIcon" onclick="sbAddSA()"></i> Add Special Ability</span>`;
+        str += `<br><span class="icon text" onclick="sbAddSASpell()"><i class="fa-solid fa-plus solidIcon" onclick="sbAddSASpell()"></i> Add Spellcasting</span>`;
         str+= `
       </div> <!-- section left -->
       <div class="section-right">`;
@@ -303,7 +331,7 @@
         </div> <!-- property block -->`;
         str += ` `;
       }
-      str += `<br><i class="fa-solid fa-plus solidIcon" onclick="sbAddAction()"></i> Add Action`;
+      str += `<br><span class="icon text" onclick="sbAddAction()"><i class="fa-solid fa-plus solidIcon" onclick="sbAddAction()"></i> Add Action</span>`;
       str += `</div> <!-- actions -->`      
 
       // Legendary actions
@@ -315,7 +343,7 @@
         if (sb.legendary_desc == "") {
           str += `
               <div class="property-block spanOnce first">
-                <p><i class="fa-solid fa-plus solidIcon" onclick="sbAddLegendaryDescription()"></i> Add Legendary Description</p>
+                <p><span class="icon text" onclick="sbAddLegendaryDescription()"><i class="fa-solid fa-plus solidIcon" onclick="sbAddLegendaryDescription()"></i> Add Legendary Description</span></p>
               </div> <!-- property block -->`;
         } else {
           str += `
@@ -333,7 +361,7 @@
             <p><span class="statblockTextInput" id="statblockLegendaryActionDesc-${i}" contenteditable="true">${action.desc}</span></p>
           </div> <!-- property block -->`;
         }
-        str += `<br><i class="fa-solid fa-plus solidIcon" onclick="sbAddLegendaryAction()"></i> Add Legendary Action`;
+        str += `<br><span class="icon text" onclick="sbAddLegendaryAction()"><i class="fa-solid fa-plus solidIcon" onclick="sbAddLegendaryAction()"></i> Add Legendary Action</span>`;
         str += `
           </div> <!-- legendary actions -->`
             
@@ -350,9 +378,11 @@
     document.getElementById("statblock-size").value = sb.size;
     document.getElementById("statblock-type").value = sb.type;
     document.getElementById("statblock-alignment").value = sb.alignment;
-    if (sb.control_type == undefined || sb.control_type == 'Enemy') document.getElementById("statblock-challenge_rating").value = sb.challenge_rating
+    document.getElementById("statblock-challenge_rating").value = sb.challenge_rating
 
     for (const skill in sb.skills) {
+      var expertVal = parseInt(abilityModifierTable[sb[skillToAbilityTable[skill]]]) + (challengeRatingProficiencyBonusTable[sb.challenge_rating] * 2);
+      if (sb.skills[skill] - expertVal == 0) document.getElementById(`statblockSkillTypeExpert-${skill}`).checked = true;
       document.getElementById(`statblockSkillType-${skill}`).value = skill;
     }
 
@@ -399,7 +429,7 @@
     } else if (elementID.includes("challenge_rating")) {
       oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
       currentStatBlock[oldKey] = editContent;
-      document.getElementById(`${elementID}XP`).innerHTML = challengeRatingXPTable[editContent];
+      if (currentStatBlock.control_type != "PC") document.getElementById(`${elementID}XP`).innerHTML = challengeRatingXPTable[editContent];
       document.getElementById(`${elementID}Proficiency`).innerHTML = challengeRatingProficiencyBonusTable[editContent];
     } else if (elementID.includes("Saves")) {
       oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
@@ -644,6 +674,12 @@
               <h4>Challenge </h4>
               <p>${sb.challenge_rating} (${challengeRatingXPTable[sb.challenge_rating]} XP) <span class="floatRight"><b>Proficiency</b> +${challengeRatingProficiencyBonusTable[sb.challenge_rating]}</span></p>
             </div> <!-- property line -->`;
+        } else if (sb.control_type == "PC") {
+          str+= `
+            <div class="property-line first">
+              <h4>Level </h4>
+              <p>${sb.challenge_rating}<span class="floatRight"><b>Proficiency Bonus</b> +${challengeRatingProficiencyBonusTable[sb.challenge_rating]}</span></p>
+            </div> <!-- property line -->`;          
         }
           str += `
             <svg height="5" width="100%" class="tapered-rule">
@@ -906,8 +942,11 @@
 
     if (e.target.className == "" || e.target.className == "selected" || e.target.className == "dead") {
       const collection = document.getElementsByClassName("selected");
-      if (collection.length > 0) collection[0].className = "";
-      e.target.parentNode.className = "selected";
+      if (collection.length > 0) {
+        console.log(collection[0].className)
+        collection[0].className = collection[0].className.replace("selected", "");
+      }
+      e.target.parentNode.className += " selected";
       let copiedSB = JSON.parse(JSON.stringify(units[index]));
       currentStatBlock = copiedSB;
       currentStatBlock.index = index;

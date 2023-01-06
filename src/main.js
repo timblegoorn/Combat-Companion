@@ -72,7 +72,8 @@ function DisplayUnits() {
 
       if (columnTitles[i] == "Type") {
         if (unit[columnTitleSlugs[i]] == "PC") {
-          numPCs++;
+          if (unit.dead == true) row.className = "dead"
+          else numPCs++;
         } else {
           numEnemies++;
           var xp = challengeRatingXPTable[unit.challenge_rating];
@@ -263,7 +264,7 @@ function incrementTurn() {
   }
 
   if (units[currentTurn].current_hit_points == 0) {
-    if (units[currentTurn].control_type == "PC") {
+    if (units[currentTurn].control_type == "PC" && (units[currentTurn].death_saves_failed == undefined || units[currentTurn].death_saves_failed < 3)) {
       RenderDeathSavingThrows(units[currentTurn].id);
     } else {
       incrementTurn();
@@ -292,17 +293,60 @@ function RenderDeathSavingThrows(id) {
 
   if (units[arrIndex].death_saves_succeeded == undefined) units[arrIndex].death_saves_succeeded = 0;
   if (units[arrIndex].death_saves_failed == undefined) units[arrIndex].death_saves_failed = 0;
+
   let sb = units[arrIndex];
+
+  if (sb.death_saves_succeeded >= 3) {
+    sb.death_saves_succeeded = 0;
+    units[arrIndex].current_hit_points = 1;
+    HidePopup();
+    incrementTurn();
+    return;
+  }
+  if (sb.death_saves_failed >= 3) {
+    sb.death_saves_succeeded = 0;
+    units[arrIndex].dead = true;
+    HidePopup();
+    incrementTurn();
+    return;
+  }
     var str = `<br><h1 class='themeDisplay'>Make A Death Saving Throw For ${sb.name}</h1>`;
   
     str += `
     <h2>Successful Saves: ${sb.death_saves_succeeded} Failed Saves: ${sb.death_saves_failed}</h2>
-    <button type="button" onclick="RollDeathSave('${id}')">Auto Roll Save</button>
-    <button type="button" onclick="AddDeathSave('${id}', -1)">Add Failed Death Save</button>
-    <button type="button" onclick="RollDeathSave('${id}', 1)">Add Successful Death Save</button>
-    <button type="button" onclick="AddDeathSave('${id}', -2)">Add Critical Fail Death Save</button>
-    <button type="button" onclick="RollDeathSave('${id}', 2)">Add Critical Success Death Save</button>`
+    <button type="button" onclick="RollDeathSave('${id}')">Auto Roll Save</button><br>
+    <button type="button" onclick="AddDeathSave('${id}', -1)">Add Failed Death Save</button><br>
+    <button type="button" onclick="AddDeathSave('${id}', 1)">Add Successful Death Save</button><br>
+    <button type="button" onclick="AddDeathSave('${id}', -2)">Add Critical Fail Death Save</button><br>
+    <button type="button" onclick="AddDeathSave('${id}', 2)">Add Critical Success Death Save</button><br>`
     DisplayPopup(str)
+}
+
+function RollDeathSave(id) {
+  var roll = Math.floor(Math.random()*20+1);
+  console.log("Death save roll: "+roll)
+  if (roll == 20) AddDeathSave(id, 3);
+  else if (roll == 1) AddDeathSave(id, -2);
+  else if (roll >= 10) AddDeathSave(id, 1);
+  else AddDeathSave(id, -1);
+}
+
+function AddDeathSave(id, amount) {
+  let arrIndex = units.findIndex(unit => unit.id === id);
+  if (arrIndex < 0) return;
+
+  if (amount < 0) {
+    units[arrIndex].death_saves_failed -= amount;
+  }
+  if (amount > 0) {
+    units[arrIndex].death_saves_succeeded += amount;
+  }
+  if (units[arrIndex].death_saves_failed >= 3 || units[arrIndex].death_saves_succeeded >= 3) {
+    RenderDeathSavingThrows(id);
+  } else {
+    HidePopup();
+    incrementTurn();
+  }
 }
 
 function RenderUnit(id) {
