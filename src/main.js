@@ -192,6 +192,28 @@ function HandleTableQuickEdit(e) {
   }
 }
 
+function HandleQuickInfoEdit(e, id) {
+  let arrIndex = units.findIndex(unit => unit.id === id);
+  if (arrIndex < 0) return;
+  var elementID = e.target.id;
+  var editContent;
+  if (e.target.value == undefined) {
+    editContent = e.target.innerHTML;
+    console.log(e.target.innerHTML)
+  } else {
+    editContent = e.target.value;
+    console.log(e.target.value)
+  }
+
+  key = elementID.slice(elementID.lastIndexOf('-')+1);
+  units[arrIndex][key] = editContent;
+  DisplayUnits();
+  //RenderUnit(id);
+  let copiedSB = JSON.parse(JSON.stringify(units[arrIndex]));
+  currentStatBlock = copiedSB;
+  DisplayStatBlock(currentStatBlock);
+}
+
 function AddStatusEffect(id) {
   let arrIndex = units.findIndex(unit => unit.id === id);
   if (arrIndex < 0) return;
@@ -234,6 +256,7 @@ function AddSelectedEffect(index) {
   const forTurns = document.getElementById("statusEffectForTurns").value;
 
   units[index].status_effects[selectedEffect] = forTurns;
+  RenderUnit(units[index].id);
   DisplayUnits();
   HidePopup();
 }
@@ -371,12 +394,14 @@ function ResetDeathSaves(id, type) {
 function RenderUnit(id) {
   let arrIndex = units.findIndex(unit => unit.id === id);
   if (arrIndex < 0) return;
+  if (units[arrIndex].notes == undefined) units[arrIndex].notes = "";
   let sb = units[arrIndex];
+  var statusEffects = "";
 
   var str = `
     <div class="quickInfoContainer">
     <hr class="orange-border top" />
-    <h1>${sb.name}</h1>`
+    <h1><input class="h1Input" type="text" id="quickview-name" name="statblockName" maxlength="40" value="${sb.name}"></h1>`
   if (sb.control_type == "PC" && sb.death_saves_failed != undefined) {
     str += `<h2>`
     if (sb.death_saves_failed > 0 || sb.current_hit_points == 0)
@@ -395,17 +420,43 @@ function RenderUnit(id) {
       <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" id="selectedplus-current_hit_points" class="plus"></button>
     </div>
     <button type="button" onclick="DamageUnit('${sb.id}')">Damage</button>
+
+    <p><b>Notes: </b><br><textarea class="statblockTextArea" id="quickview-notes">${sb.notes}</textarea></p>
+
+    <b>Status Effects: </b>`;
+    if (sb.status_effects == undefined) sb.status_effects = {};
+    if ((sb.control_type == "PC" && sb.dead) || (sb.control_type != "PC" && sb.current_hit_points == 0)) dataVal = "";
+    else {
+      const statusEffectKeys = Object.keys(sb.status_effects);
+      statusEffects = "";
+      for (var z = 0; z < statusEffectKeys.length; z++) {
+        if (sb.status_effects[statusEffectKeys[z]] == 0) {
+          statusEffects += `<div class="statusEffect">${statusEffectKeys[z]} <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect('${sb.id}', '${statusEffectKeys[z]}')"></i></div>`
+        } else {
+          statusEffects += `<div class="statusEffect">${statusEffectKeys[z]} (${sb.status_effects[statusEffectKeys[z]]}) <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect('${sb.id}', '${statusEffectKeys[z]}')"></i></div>`
+        }
+      }
+      
+      statusEffects += `<span class="icon text" onclick="AddStatusEffect('${sb.id}')"><i class="fa-solid fa-plus icon"></i> Add Effect</span>`
+
+      if (sb.control_type == "PC" && sb.current_hit_points == 0) {
+        statusEffects = `<div class="statusEffect">Unconscious</div>`
+      }
+    }
+  str += statusEffects;
+  str += `
     <hr class="orange-border bottom" />
     </div>
     `;
 
   document.getElementById("unitZone").innerHTML = str;
+  document.getElementById("quickview-name").addEventListener("change", (event) => {HandleQuickInfoEdit(event, sb.id)});
+  document.getElementById("quickview-notes").addEventListener("change", (event) => {HandleQuickInfoEdit(event, sb.id)});
 }
 
 function HealUnit(id) {
   let arrIndex = units.findIndex(unit => unit.id === id);
   let amount = parseInt(document.getElementById('selected-current_hit_points').value);
-  console.log(arrIndex)
   if (arrIndex < 0) return;
 
   units[arrIndex].current_hit_points += amount;
@@ -418,11 +469,18 @@ function HealUnit(id) {
 function DamageUnit(id) {
   let arrIndex = units.findIndex(unit => unit.id === id);
   let amount = parseInt(document.getElementById('selected-current_hit_points').value);
-  console.log(arrIndex)
   if (arrIndex < 0) return;
 
   units[arrIndex].current_hit_points -= amount;
-  if (units[arrIndex].current_hit_points < 0) units[arrIndex].current_hit_points = 0;
+  if (units[arrIndex].current_hit_points < 0) {
+    if (units[arrIndex].current_hit_points + units[arrIndex].hit_points <= 0 && units[arrIndex].control_type == "PC") {
+      units[arrIndex].death_saves_failed = 3;
+      units[arrIndex].death_saves_succeeded = 0;
+      units[arrIndex].dead = true;
+      console.log("MASSIVE DAMAGE! Instant kill");
+    }
+    units[arrIndex].current_hit_points = 0;
+  }
   DisplayUnits();
   DisplayStatBlock(units[arrIndex]);
   RenderUnit(id);

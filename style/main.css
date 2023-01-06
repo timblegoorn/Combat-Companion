@@ -419,6 +419,13 @@ h1.themeDisplay {
   position: relative;
 }
 
+.statblockTextArea {
+  min-width: 100%;
+  min-height: 2.5rem;
+  max-height: 10rem;
+  height: auto;
+}
+
 .draggable {
   position: absolute;
   width: 560px;
