@@ -487,17 +487,23 @@
   }
   
   // Statblock HTML template and CSS provided from: https://codepen.io/retractedhack/pen/gPLpWe
-  function RenderStatBlock(statblock) {
+  function RenderStatBlock(statblock, draggable) {
     const sb = statblock;
     var str = `<div class="stat-block">
       <hr class="orange-border" />
       <div class="section-left">
-        <div class="creature-heading">
-          <h1>${sb.name}</h1>
-          <span class="icon text" onclick="EditCurrentStatBlock()"><i class="fa-solid fa-pen-to-square icon"></i> Edit Statblock</span>
-          <br>
-          <span class="icon text" onclick="AddCurrentStatBlockToCombat()"><i class="fa-solid fa-plus icon"></i> Add to Combat With Initiative: </span>
-          <input class="statblockNumberInput" type="number" min="1" max="40" id="statblock-initiative" name="statblock-initiative">`;
+        <div class="creature-heading">`
+
+    if (draggable) {
+      str += `<h1>${sb.name}</h1>`
+    } else {
+      str +=`
+      <h1>${sb.name} <i class="fa-solid fa-arrow-up-right-from-square icon" onclick="PopoutSB(event)"></i></h1>
+      <span class="icon text" onclick="EditCurrentStatBlock()"><i class="fa-solid fa-pen-to-square icon"></i> Edit Statblock</span>
+      <br>
+      <span class="icon text" onclick="AddCurrentStatBlockToCombat()"><i class="fa-solid fa-plus icon"></i> Add to Combat With Initiative: </span>
+      <input class="statblockNumberInput" type="number" min="1" max="40" id="statblock-initiative" name="statblock-initiative">`;
+    }
         if (sb.control_type == undefined || sb.control_type == 'Enemy') {
           str += `
           <h2>${sb.size} ${sb.type}, ${sb.alignment}</h2>`;
@@ -743,23 +749,31 @@
     return str;
   }
 
+  function PopoutSB(e) {
+    var id = DisplayDraggableStatBlock(currentStatBlock);
+    document.getElementById(id).style.left = e.clientX + "px";
+    document.getElementById(id).style.top = e.clientY + "px";
+  }
+
+
   var dragging = false;
   function DisplayDraggableStatBlock(sb) {
     const draggableWindow = document.createElement('div');
     draggableWindow.id = `draggable-${draggableID}`;
     draggableWindow.className = `draggable`
     draggableID++;
-    var str = RenderStatBlock(sb);
+    var str = RenderStatBlock(sb, true);
     draggableWindow.innerHTML = str;
     document.getElementById("contentContainer").append(draggableWindow);
-    draggableWindow.innerHTML += `<i class="fa-solid fa-x icon rightCorner" onclick="this.parentNode.remove()"></i>`;
-
+    draggableWindow.innerHTML += `<i class="fa-solid fa-x icon rightCorner dragCorner" onclick="this.parentNode.remove()"></i>`;
+    draggableWindow.innerHTML += `<i class="fa-solid fa-grip leftCorner dragCorner"></i>`;
+    
     const collection = draggableWindow.getElementsByClassName("orange-border");
     collection[0].className = "orange-border draggable"
 
-    document.getElementById(draggableWindow.id).style.left = 50 + "px";
-    document.getElementById(draggableWindow.id).style.top = 50 + "px";
+
     document.getElementById(draggableWindow.id).addEventListener("mousedown", startDrag);
+    return draggableWindow.id;
   }
 
   var dragging = false;
