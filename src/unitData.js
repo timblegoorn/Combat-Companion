@@ -327,7 +327,8 @@ var units = [
       "document__title": "Systems Reference Document",
       "document__license_url": "http://open5e.com/legal",
       "initiative": 20,
-      "control_type": "Enemy"
+      "control_type": "Enemy",
+      id: 'c328ad67-bb6d-4802-8518-3a3ee7eac203',
   },
   {
     "slug": "goblin",
@@ -399,7 +400,8 @@ var units = [
     "document__title": "Systems Reference Document",
     "document__license_url": "http://open5e.com/legal",
     "initiative": 16,
-    "control_type": "Enemy"
+    "control_type": "Enemy",
+    id: '088195fa-a0c3-4a07-96d7-33c55f2f29ee',
 },
 {
   "slug": "dust-goblin-chieftain",
@@ -488,7 +490,8 @@ var units = [
   "document__title": "Creature Codex OGL",
   "document__license_url": "http://open5e.com/legal",
   "initiative": 13,
-  "control_type": "Enemy"
+  "control_type": "Enemy",
+  id: 'bc28b603-f64b-4556-97e6-bbbbdad18240',
 },
   {
     "slug": "ulfric",
@@ -552,7 +555,8 @@ var units = [
     "document__title": "custom",
     "document__license_url": "https://github.com/timblegoorn/Combat-Companion",
     "initiative": 18, 
-    "control_type": "PC"
+    "control_type": "PC",
+    id: '72ef9ebe-ffe7-49f2-8219-b5edd7454b8f',
     },
     {
         "slug": "leah",
@@ -616,6 +620,7 @@ var units = [
         "document__title": "custom",
         "document__license_url": "https://github.com/timblegoorn/Combat-Companion",
         "initiative": 6, 
-        "control_type": "PC"
+        "control_type": "PC",
+        id: '03fb0593-0c14-435c-822d-d43558916406',
         },
 ]

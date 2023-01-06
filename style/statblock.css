@@ -150,6 +150,14 @@ body {
     box-sizing: initial;
     column-span: all;
   }
+  .orange-border.draggable{
+    height: 20px;
+    padding: 0px;
+    margin: -20px -10px 0;
+  }
+  .orange-border.draggable:hover{
+    cursor: grab;
+  }
   .orange-border.bottom{
     margin: 15px -10px -20px;
   }

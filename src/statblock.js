@@ -1,5 +1,8 @@
   // Statblock HTML template and CSS provided from: https://codepen.io/retractedhack/pen/gPLpWe
   // Editable stat block contains all possible fields. Final rendered statblock only contains provided information
+
+  var draggableID = 0;
+
   function RenderEditableStatBlock(statblock) {
     const sb = statblock;
 
@@ -10,7 +13,7 @@
       <div class="section-left">
         <div class="creature-heading">
           <h1><input class="h1Input" type="text" id="statblock-name" name="statblockName" maxlength="40" value="${sb.name}"></h1>
-          <i class="fa-solid fa-floppy-disk icon" onclick="SaveCurrentStatBlock()"></i> Save Statblock`;
+          <span class="icon text" onclick="SaveCurrentStatBlock()"><i class="fa-solid fa-floppy-disk icon"></i> Save Statblock</span>`;
         if (sb.control_type == 'PC') {
           str += `<h2>Player Character</h2>`
         }
@@ -341,7 +344,7 @@
     </div> <!-- stat block -->`;
   
   
-    document.getElementById('addZone').innerHTML = str;  
+    document.getElementById('statblockZone').innerHTML = str;  
 
     // Set values of drop down elements based on sb
     document.getElementById("statblock-size").value = sb.size;
@@ -456,16 +459,14 @@
   // Statblock HTML template and CSS provided from: https://codepen.io/retractedhack/pen/gPLpWe
   function RenderStatBlock(statblock) {
     const sb = statblock;
-
-    var str = `
-    <div class="stat-block">
+    var str = `<div class="stat-block">
       <hr class="orange-border" />
       <div class="section-left">
         <div class="creature-heading">
           <h1>${sb.name}</h1>
-          <i class="fa-solid fa-pen-to-square icon" onclick="EditCurrentStatBlock()"></i> Edit Statblock
+          <span class="icon text" onclick="EditCurrentStatBlock()"><i class="fa-solid fa-pen-to-square icon"></i> Edit Statblock</span>
           <br>
-          <i class="fa-solid fa-plus icon" onclick="AddCurrentStatBlockToCombat()"></i> Add to Combat With Initiative: 
+          <span class="icon text" onclick="AddCurrentStatBlockToCombat()"><i class="fa-solid fa-plus icon"></i> Add to Combat With Initiative: </span>
           <input class="statblockNumberInput" type="number" min="1" max="40" id="statblock-initiative" name="statblock-initiative">`;
         if (sb.control_type == undefined || sb.control_type == 'Enemy') {
           str += `
@@ -703,7 +704,88 @@
       <hr class="orange-border bottom" />
     </div> <!-- stat block -->`;  
   
-    document.getElementById('addZone').innerHTML = str; 
+    return str;
+  }
+
+  var dragging = false;
+  function DisplayDraggableStatBlock(sb) {
+    const draggableWindow = document.createElement('div');
+    draggableWindow.id = `draggable-${draggableID}`;
+    draggableWindow.className = `draggable`
+    draggableID++;
+    var str = RenderStatBlock(sb);
+    draggableWindow.innerHTML = str;
+    document.getElementById("contentContainer").append(draggableWindow);
+    draggableWindow.innerHTML += `<i class="fa-solid fa-x icon rightCorner" onclick="this.parentNode.remove()"></i>`;
+
+    const collection = draggableWindow.getElementsByClassName("orange-border");
+    collection[0].className = "orange-border draggable"
+
+    document.getElementById(draggableWindow.id).style.left = 50 + "px";
+    document.getElementById(draggableWindow.id).style.top = 50 + "px";
+    document.getElementById(draggableWindow.id).addEventListener("mousedown", startDrag);
+  }
+
+  var dragging = false;
+  var draggingID;
+  var dragStart = {x:0,y:0};
+  function startDrag(e) {
+    var el = e.target;
+    if (el.className != "orange-border draggable") return;
+    e = e || window.event;
+    e.preventDefault();
+    dragging = true;
+
+    if (el.id.includes("draggable")) {
+      draggingID = el.id;
+    } else {
+      while (el && el.parentNode) {
+        el = el.parentNode;
+        if (el.id.includes("draggable")) {
+          draggingID = el.id;
+          break;
+        }
+      }
+    }
+
+    dragStart.x = e.clientX;
+    dragStart.y = e.clientY;
+    document.onmouseup = stopDrag;
+    // call a function whenever the cursor moves:
+    document.onmousemove = handleDrag;
+  }
+
+  function stopDrag(e) {
+    dragging = false;
+    draggingID = undefined;
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+
+  function handleDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    lastDifference.x = dragStart.x - e.clientX;
+    lastDifference.y = dragStart.y - e.clientY;
+    dragStart.x = e.clientX;
+    dragStart.y = e.clientY;
+    if (dragging) {
+      if (draggingID != undefined) {
+        var newLeft = (document.getElementById(draggingID).offsetLeft - lastDifference.x);
+        var newTop = (document.getElementById(draggingID).offsetTop - lastDifference.y);
+        if (newLeft < 0) newLeft = 0;
+        if (newTop < 0) newTop = 0;
+        if (newLeft + document.getElementById(draggingID).offsetWidth > window.innerWidth) newLeft = window.innerWidth - document.getElementById(draggingID).offsetWidth;
+        if (newTop + document.getElementById(draggingID).offsetHeight > window.innerHeight) newTop = window.innerHeight - document.getElementById(draggingID).offsetHeight;
+        document.getElementById(draggingID).style.top = newTop + "px";
+        document.getElementById(draggingID).style.left = newLeft + "px";
+      }
+    };
+  }
+
+  function DisplayStatBlock(sb) {
+    var str = RenderStatBlock(sb)
+    document.getElementById('statblockZone').innerHTML = str; 
   }
 
   function sbAddSpeed() {
@@ -829,16 +911,28 @@
       let copiedSB = JSON.parse(JSON.stringify(units[index]));
       currentStatBlock = copiedSB;
       currentStatBlock.index = index;
-      RenderStatBlock(currentStatBlock);
+      RenderUnit(currentStatBlock.id);
+      DisplayStatBlock(currentStatBlock);
     }
   }
 
+  //units.some(unit => unit.id !== copiedSB.id)
   function SaveCurrentStatBlock() {
     let copiedSB = JSON.parse(JSON.stringify(currentStatBlock));
-    units[copiedSB.index] = copiedSB;
+
+    let arrIndex = units.findIndex(unit => unit.id === copiedSB.id);
+    if (arrIndex < 0) {
+      DisplayStatBlock(currentStatBlock);
+      return;
+    }
+
+    if (units[arrIndex].current_hit_points > copiedSB.hit_points) copiedSB.current_hit_points = copiedSB.hit_points;
+    else copiedSB.current_hit_points = units[arrIndex].current_hit_points;
+    units[arrIndex] = copiedSB;
 
     DisplayUnits();
-    RenderStatBlock(currentStatBlock);
+    RenderUnit(currentStatBlock.id);
+    DisplayStatBlock(currentStatBlock);
   }
 
   function AddCurrentStatBlockToCombat() {
@@ -851,6 +945,8 @@
 
     let copiedSB = JSON.parse(JSON.stringify(currentStatBlock));
     copiedSB.initiative = initiative;
+    if (copiedSB.id == undefined) copiedSB.id = crypto.randomUUID();
+    console.log(copiedSB.id)
     units.push(copiedSB);
     DisplayUnits();
     return false;  
@@ -860,12 +956,16 @@
     let copiedSB = JSON.parse(JSON.stringify(blankStatblock));
 
     currentStatBlock = copiedSB;
-    RenderStatBlock(currentStatBlock)
+    currentStatBlock.id = crypto.randomUUID();
+    RenderUnit(currentStatBlock.id);
+    DisplayStatBlock(currentStatBlock)
   }
 
   function AddNewPC() {
     let copiedSB = JSON.parse(JSON.stringify(blankPCStatblock));
 
     currentStatBlock = copiedSB;
-    RenderStatBlock(currentStatBlock)
+    currentStatBlock.id = crypto.randomUUID();
+    RenderUnit(currentStatBlock.id);
+    DisplayStatBlock(currentStatBlock)
   }

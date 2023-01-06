@@ -4,7 +4,7 @@ var currentRound = 1; // round increments after each unit has a turn
 var currentTurn = 0; // corresponds to unit index
 
 var searchBar, searchResults;
-var columnTitles = ["Initiative", "Type", "Name", "Hit Points", "Armor Class", "Status Effects"];
+var columnTitles = ["Initiative", "Type", "Name", "Hit Points", "Armor Class", "Status Effects", "Actions"];
 var columnTitleSlugs = ["initiative", "control_type", "name", "hit_points", "armor_class", "status_effects"];
 
 function DisplayUnits() {
@@ -46,6 +46,7 @@ function DisplayUnits() {
 
   // Loop through the objects and create a table row for each one
   for (var j = 0; j < units.length; j++) {
+    if (units[j].id == undefined) units[j].id = crypto.randomUUID();
     const unit = units[j];
     const row = document.createElement('tr');
     for (var i = 0; i < columnTitles.length; i++) {
@@ -64,6 +65,9 @@ function DisplayUnits() {
         row.className = "selected";
         dataVal = `<i class="fa-solid fa-chevron-right"></i> `;
         dataVal += unit[columnTitleSlugs[i]];
+      } else if (columnTitles[i] == "Actions") {
+        dataVal = `<i class="fa-regular fa-copy icon" onclick="CopyUnit('${unit.id}')"></i>   
+                   <i class="fa-regular fa-x icon" onclick="DeleteUnit('${unit.id}')"></i>`;
       } else dataVal = unit[columnTitleSlugs[i]];
 
       if (columnTitles[i] == "Type") {
@@ -87,15 +91,15 @@ function DisplayUnits() {
         dataVal = "";
         for (var z = 0; z < statusEffectKeys.length; z++) {
           if (unit.status_effects[statusEffectKeys[z]] == 0) {
-            dataVal += `<div class="statusEffect">${statusEffectKeys[z]} <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect(${j}, '${statusEffectKeys[z]}')"></i></div>`
+            dataVal += `<div class="statusEffect">${statusEffectKeys[z]} <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect('${unit.id}', '${statusEffectKeys[z]}')"></i></div>`
           } else {
-            dataVal += `<div class="statusEffect">${statusEffectKeys[z]} (${unit.status_effects[statusEffectKeys[z]]}) <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect(${j}, '${statusEffectKeys[z]}')"></i></div>`
+            dataVal += `<div class="statusEffect">${statusEffectKeys[z]} (${unit.status_effects[statusEffectKeys[z]]}) <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect('${unit.id}', '${statusEffectKeys[z]}')"></i></div>`
           }
         }
         
-        dataVal += `<i class="fa-solid fa-plus icon" onclick="AddStatusEffect(${j})"></i>`
+        dataVal += `<span class="icon text" onclick="AddStatusEffect('${unit.id}')"><i class="fa-solid fa-plus icon"></i> Add Effect</span>`
       }
-      if (dataVal == undefined) dataVal = `<i class="fa-solid fa-pen-to-square icon" onclick="EditStatBlock(event, ${j})"></i>`;
+      if (dataVal == undefined) dataVal = `<i class="fa-solid fa-pen-to-square icon" onclick="EditStatBlock(event, '${unit.id}')"></i>`;
 
       rowVal.innerHTML = dataVal;
       row.appendChild(rowVal);
@@ -125,6 +129,33 @@ function DisplayUnits() {
   document.getElementById("initiativeTable").querySelectorAll("input").forEach((elem) => elem.addEventListener("change", HandleTableQuickEdit));
 }
 
+function CopyUnit(id) {
+  let arrIndex = units.findIndex(unit => unit.id === id);
+  if (arrIndex < 0) return;
+  let copiedSB = JSON.parse(JSON.stringify(units[arrIndex]));
+  copiedSB.id = crypto.randomUUID();
+  units.push(copiedSB);
+  DisplayUnits();
+}
+
+function ConfirmDeleteUnit(index) {
+  HidePopup();
+
+  units.splice(index,1);
+  if (currentTurn >= units.length) currentTurn = 0;
+  DisplayUnits();
+}
+
+function DeleteUnit(id) {
+  let arrIndex = units.findIndex(unit => unit.id === id);
+  if (arrIndex < 0) return;
+  var str = `<br><h1 class='themeDisplay'>Confirm Deleting ${units[arrIndex].name}</h1>`;
+
+  str += `
+  <button type="button" onclick="ConfirmDeleteUnit(${arrIndex})">Confirm Deletion</button><button type="button" onclick="HidePopup()">Cancel</button>`
+  DisplayPopup(str);
+}
+
 function HandleTableQuickEdit(e) {
   var elementID = e.target.id;
   var editContent, editSubType, key;
@@ -143,16 +174,21 @@ function HandleTableQuickEdit(e) {
     editContent = document.getElementById(elementID).value;
   }
   if (elementID.includes("hit_points")) {
-    if (editContent <= 0) editContent = 0;
-    if (editContent > units[index].hit_points) editContent = units[index].hit_points;
+    if (editSubType != 'plus' && editSubType != 'minus') {
+      if (editContent <= 0) editContent = 0;
+      if (editContent > units[index].hit_points) editContent = units[index].hit_points;
+    }
+
     units[index][key] = editContent;
     DisplayUnits();
     //document.getElementById(elementID).value = editContent;
   }
 }
 
-function AddStatusEffect(index) {
-  var str = `<br><h1 class='themeDisplay'>Add Status Effect to ${units[index].name}</h1>`;
+function AddStatusEffect(id) {
+  let arrIndex = units.findIndex(unit => unit.id === id);
+  if (arrIndex < 0) return;
+  var str = `<br><h1 class='themeDisplay'>Add Status Effect to ${units[arrIndex].name}</h1>`;
 
   str += `
   <label for="statusEffectSelect">Select Status Effect</label>
@@ -182,7 +218,7 @@ function AddStatusEffect(index) {
   </div>
   <br><i>Leave at 0 for indefinite</i>
   <br><br>
-  <button type="button" onclick="AddSelectedEffect(${index})">Add Status Effect</button>`
+  <button type="button" onclick="AddSelectedEffect(${arrIndex})">Add Status Effect</button>`
   DisplayPopup(str)
 }
 
@@ -195,8 +231,10 @@ function AddSelectedEffect(index) {
   HidePopup();
 }
 
-function DeleteStatusEffect(index, type) {
-  delete units[index].status_effects[type];
+function DeleteStatusEffect(id, type) {
+  let arrIndex = units.findIndex(unit => unit.id === id);
+  if (arrIndex < 0) return;
+  delete units[arrIndex].status_effects[type];
   DisplayUnits();
 }
 
@@ -224,9 +262,13 @@ function incrementTurn() {
     currentRound++;
   }
 
-  if (units[currentTurn].current_hit_points == 0 && units[currentTurn].control_type != "PC") {
-    incrementTurn();
-    return;
+  if (units[currentTurn].current_hit_points == 0) {
+    if (units[currentTurn].control_type == "PC") {
+      RenderDeathSavingThrows(units[currentTurn].id);
+    } else {
+      incrementTurn();
+      return;
+    }
   }
 
   for(var statusEffect in units[currentTurn].status_effects){
@@ -239,8 +281,78 @@ function incrementTurn() {
   let copiedSB = JSON.parse(JSON.stringify(units[currentTurn]));
   currentStatBlock = copiedSB;
   currentStatBlock.index = currentTurn;
-  RenderStatBlock(currentStatBlock);
   DisplayUnits();
+  RenderUnit(currentStatBlock.id);
+  DisplayStatBlock(currentStatBlock);
+}
+
+function RenderDeathSavingThrows(id) {
+  let arrIndex = units.findIndex(unit => unit.id === id);
+  if (arrIndex < 0) return;
+
+  if (units[arrIndex].death_saves_succeeded == undefined) units[arrIndex].death_saves_succeeded = 0;
+  if (units[arrIndex].death_saves_failed == undefined) units[arrIndex].death_saves_failed = 0;
+  let sb = units[arrIndex];
+    var str = `<br><h1 class='themeDisplay'>Make A Death Saving Throw For ${sb.name}</h1>`;
+  
+    str += `
+    <h2>Successful Saves: ${sb.death_saves_succeeded} Failed Saves: ${sb.death_saves_failed}</h2>
+    <button type="button" onclick="RollDeathSave('${id}')">Auto Roll Save</button>
+    <button type="button" onclick="AddDeathSave('${id}', -1)">Add Failed Death Save</button>
+    <button type="button" onclick="RollDeathSave('${id}', 1)">Add Successful Death Save</button>
+    <button type="button" onclick="AddDeathSave('${id}', -2)">Add Critical Fail Death Save</button>
+    <button type="button" onclick="RollDeathSave('${id}', 2)">Add Critical Success Death Save</button>`
+    DisplayPopup(str)
+}
+
+function RenderUnit(id) {
+  let arrIndex = units.findIndex(unit => unit.id === id);
+  if (arrIndex < 0) return;
+  let sb = units[arrIndex];
+
+  var str = `
+    <div class="quickInfoContainer">
+    <hr class="orange-border top" />
+    <h1>${sb.name}</h1>
+    <h2> Current HP ${sb.current_hit_points}/${sb.hit_points}</h2>
+    <button type="button" onclick="HealUnit('${sb.id}')">Heal</button>
+    <div class="number-input big">
+      <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" id="selectedminus-current_hit_points" class="minus"></button>
+      <input type="number" min="0" max="999" class="inlineCustomNumInput" id="selected-current_hit_points" name="selected-current_hit_points" value="0">
+      <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" id="selectedplus-current_hit_points" class="plus"></button>
+    </div>
+    <button type="button" onclick="DamageUnit('${sb.id}')">Damage</button>
+    <hr class="orange-border bottom" />
+    </div>
+    `;
+
+  document.getElementById("unitZone").innerHTML = str;
+}
+
+function HealUnit(id) {
+  let arrIndex = units.findIndex(unit => unit.id === id);
+  let amount = parseInt(document.getElementById('selected-current_hit_points').value);
+  console.log(arrIndex)
+  if (arrIndex < 0) return;
+
+  units[arrIndex].current_hit_points += amount;
+  if (units[arrIndex].current_hit_points > units[arrIndex].hit_points) units[arrIndex].current_hit_points = units[arrIndex].hit_points;
+  DisplayUnits();
+  DisplayStatBlock(units[arrIndex]);
+  RenderUnit(id);
+}
+
+function DamageUnit(id) {
+  let arrIndex = units.findIndex(unit => unit.id === id);
+  let amount = parseInt(document.getElementById('selected-current_hit_points').value);
+  console.log(arrIndex)
+  if (arrIndex < 0) return;
+
+  units[arrIndex].current_hit_points -= amount;
+  if (units[arrIndex].current_hit_points < 0) units[arrIndex].current_hit_points = 0;
+  DisplayUnits();
+  DisplayStatBlock(units[arrIndex]);
+  RenderUnit(id);
 }
 
 function AddUnit() {
@@ -279,7 +391,7 @@ function ResetGame() {
   units = [];
 
   DisplayUnits();
-  document.getElementById('addZone').innerHTML = "No currently selected unit"; 
+  document.getElementById('statblockZone').innerHTML = "No currently selected unit"; 
 }
 
 function SaveGame() {
@@ -303,10 +415,14 @@ function LoadGame() {
       let copiedSB = JSON.parse(JSON.stringify(units[currentTurn]));
       currentStatBlock = copiedSB;
       currentStatBlock.index = currentTurn;
-      RenderStatBlock(currentStatBlock);
+      RenderUnit(currentStatBlock.id);
+      DisplayStatBlock(currentStatBlock);
     }
 }
 
+var mousecoords;
+var lastCoords = {x: 0, y: 0};
+var lastDifference = {x: 0, y: 0}
 function Init() {
   DisplayUnits();
 
@@ -321,9 +437,13 @@ function Init() {
     let copiedSB = JSON.parse(JSON.stringify(units[currentTurn]));
     currentStatBlock = copiedSB;
     currentStatBlock.index = 0;
-    RenderStatBlock(currentStatBlock);
+    RenderUnit(currentStatBlock.id);
+    DisplayStatBlock(currentStatBlock);
   }
+
+
 }
+
 
 // Call the displayObjectList function when the page loads
 window.addEventListener('load', Init);
