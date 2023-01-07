@@ -392,66 +392,86 @@ function ResetDeathSaves(id, type) {
 }
 
 function RenderUnit(id) {
-  let arrIndex = units.findIndex(unit => unit.id === id);
-  if (arrIndex < 0) return;
-  if (units[arrIndex].notes == undefined) units[arrIndex].notes = "";
-  let sb = units[arrIndex];
-  var statusEffects = "";
+  if (id == "newSB-Monster" || id == "newSB-PC") {
+    var str = `
+      <div class="quickInfoContainer">
+      <hr class="orange-border top" />
+      <h1><input class="h1Input" type="text" id="quickview-name" name="statblockName" maxlength="40" value="Monster"></h1>`;
 
-  var str = `
-    <div class="quickInfoContainer">
-    <hr class="orange-border top" />
-    <h1><input class="h1Input" type="text" id="quickview-name" name="statblockName" maxlength="40" value="${sb.name}"></h1>`
-  if (sb.control_type == "PC" && sb.death_saves_failed != undefined) {
-    str += `<h2>`
-    if (sb.death_saves_failed > 0 || sb.current_hit_points == 0)
-      str += `Failed Death Saves: ${sb.death_saves_failed} <i class="fa-solid fa-arrow-rotate-left icon" onclick="ResetDeathSaves('${id}',true)"></i> `;
-    if (sb.current_hit_points == 0)
-      str += `Successful Saves: ${sb.death_saves_succeeded} <i class="fa-solid fa-arrow-rotate-left icon" onclick="ResetDeathSaves('${id}',false)"></i>`;
-    str += `</h2>`;
-  }
-
-  str += `
-    <h2> Current HP ${sb.current_hit_points}/${sb.hit_points}</h2>
-    <button type="button" onclick="HealUnit('${sb.id}')">Heal</button>
-    <div class="number-input big">
-      <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" id="selectedminus-current_hit_points" class="minus"></button>
-      <input type="number" min="0" max="999" class="inlineCustomNumInput" id="selected-current_hit_points" name="selected-current_hit_points" value="0">
-      <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" id="selectedplus-current_hit_points" class="plus"></button>
-    </div>
-    <button type="button" onclick="DamageUnit('${sb.id}')">Damage</button>
-
-    <p><b>Notes: </b><br><textarea class="statblockTextArea" id="quickview-notes">${sb.notes}</textarea></p>
-
-    <b>Status Effects: </b>`;
-    if (sb.status_effects == undefined) sb.status_effects = {};
-    if ((sb.control_type == "PC" && sb.dead) || (sb.control_type != "PC" && sb.current_hit_points == 0)) dataVal = "";
-    else {
-      const statusEffectKeys = Object.keys(sb.status_effects);
-      statusEffects = "";
-      for (var z = 0; z < statusEffectKeys.length; z++) {
-        if (sb.status_effects[statusEffectKeys[z]] == 0) {
-          statusEffects += `<div class="statusEffect">${statusEffectKeys[z]} <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect('${sb.id}', '${statusEffectKeys[z]}')"></i></div>`
-        } else {
-          statusEffects += `<div class="statusEffect">${statusEffectKeys[z]} (${sb.status_effects[statusEffectKeys[z]]}) <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect('${sb.id}', '${statusEffectKeys[z]}')"></i></div>`
+    str += `
+      <button type="button" onclick="">Generate Basic Statblock</button> 
+      <br>
+      <span class="icon text" onclick="AddCurrentStatBlockToCombat()"><i class="fa-solid fa-plus icon"></i> Add to Combat With Initiative: </span>
+      <input class="statblockNumberInput" type="number" min="1" max="40" id="statblock-initiative" name="statblock-initiative">`;
+    str += `
+      <hr class="orange-border bottom" />
+      </div>
+      `;
+    document.getElementById("unitZone").innerHTML = str;
+  } else if (!id) {
+    document.getElementById("unitZone").innerHTML = "";
+  } else {
+    let arrIndex = units.findIndex(unit => unit.id === id);
+    if (arrIndex < 0) return;
+    if (units[arrIndex].notes == undefined) units[arrIndex].notes = "";
+    let sb = units[arrIndex];
+    var statusEffects = "";
+  
+    var str = `
+      <div class="quickInfoContainer">
+      <hr class="orange-border top" />
+      <h1><input class="h1Input" type="text" id="quickview-name" name="statblockName" maxlength="40" value="${sb.name}"></h1>`
+    if (sb.control_type == "PC" && sb.death_saves_failed != undefined) {
+      str += `<h2>`
+      if (sb.death_saves_failed > 0 || sb.current_hit_points == 0)
+        str += `Failed Death Saves: ${sb.death_saves_failed} <i class="fa-solid fa-arrow-rotate-left icon" onclick="ResetDeathSaves('${id}',true)"></i> `;
+      if (sb.current_hit_points == 0)
+        str += `Successful Saves: ${sb.death_saves_succeeded} <i class="fa-solid fa-arrow-rotate-left icon" onclick="ResetDeathSaves('${id}',false)"></i>`;
+      str += `</h2>`;
+    }
+  
+    str += `
+      <h2> Current HP ${sb.current_hit_points}/${sb.hit_points}</h2>
+      <button type="button" onclick="HealUnit('${sb.id}')">Heal</button>
+      <div class="number-input big">
+        <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" id="selectedminus-current_hit_points" class="minus"></button>
+        <input type="number" min="0" max="999" class="inlineCustomNumInput" id="selected-current_hit_points" name="selected-current_hit_points" value="0">
+        <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" id="selectedplus-current_hit_points" class="plus"></button>
+      </div>
+      <button type="button" onclick="DamageUnit('${sb.id}')">Damage</button>
+  
+      <p><b>Notes: </b><br><textarea class="statblockTextArea" id="quickview-notes">${sb.notes}</textarea></p>
+  
+      <b>Status Effects: </b>`;
+      if (sb.status_effects == undefined) sb.status_effects = {};
+      if ((sb.control_type == "PC" && sb.dead) || (sb.control_type != "PC" && sb.current_hit_points == 0)) dataVal = "";
+      else {
+        const statusEffectKeys = Object.keys(sb.status_effects);
+        statusEffects = "";
+        for (var z = 0; z < statusEffectKeys.length; z++) {
+          if (sb.status_effects[statusEffectKeys[z]] == 0) {
+            statusEffects += `<div class="statusEffect">${statusEffectKeys[z]} <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect('${sb.id}', '${statusEffectKeys[z]}')"></i></div>`
+          } else {
+            statusEffects += `<div class="statusEffect">${statusEffectKeys[z]} (${sb.status_effects[statusEffectKeys[z]]}) <i class="fa-solid fa-x icon" onclick="DeleteStatusEffect('${sb.id}', '${statusEffectKeys[z]}')"></i></div>`
+          }
+        }
+        
+        statusEffects += `<span class="icon text" onclick="AddStatusEffect('${sb.id}')"><i class="fa-solid fa-plus icon"></i> Add Effect</span>`
+  
+        if (sb.control_type == "PC" && sb.current_hit_points == 0) {
+          statusEffects = `<div class="statusEffect">Unconscious</div>`
         }
       }
-      
-      statusEffects += `<span class="icon text" onclick="AddStatusEffect('${sb.id}')"><i class="fa-solid fa-plus icon"></i> Add Effect</span>`
-
-      if (sb.control_type == "PC" && sb.current_hit_points == 0) {
-        statusEffects = `<div class="statusEffect">Unconscious</div>`
-      }
-    }
-  str += statusEffects;
-  str += `
-    <hr class="orange-border bottom" />
-    </div>
-    `;
-
-  document.getElementById("unitZone").innerHTML = str;
-  document.getElementById("quickview-name").addEventListener("change", (event) => {HandleQuickInfoEdit(event, sb.id)});
-  document.getElementById("quickview-notes").addEventListener("change", (event) => {HandleQuickInfoEdit(event, sb.id)});
+    str += statusEffects;
+    str += `
+      <hr class="orange-border bottom" />
+      </div>
+      `;
+  
+    document.getElementById("unitZone").innerHTML = str;
+    document.getElementById("quickview-name").addEventListener("change", (event) => {HandleQuickInfoEdit(event, sb.id)});
+    document.getElementById("quickview-notes").addEventListener("change", (event) => {HandleQuickInfoEdit(event, sb.id)});
+  }
 }
 
 function HealUnit(id) {
@@ -484,36 +504,6 @@ function DamageUnit(id) {
   DisplayUnits();
   DisplayStatBlock(units[arrIndex]);
   RenderUnit(id);
-}
-
-function AddUnit() {
-  // Get the value of the input field
-  var name = document.getElementById("itemName").value;
-  var initiative = document.getElementById("itemInitiative").value;
-  var hp = document.getElementById("itemHP").value;
-  var ac = document.getElementById("itemAC").value;
-
-  if (isNaN(initiative) || initiative < 0 || initiative == "") {
-    initiative = Math.floor(Math.random() * 20) + 1;
-  }
-  if (isNaN(hp) || hp < 0 || hp == "") {
-    console.log("invalid hp");
-    return false;
-  }
-  if (name == "") {
-    console.log("invalid name");
-    return false;
-  }
-  // Reset the value of the input field
-  document.getElementById("itemName").value = "";
-  document.getElementById("itemInitiative").value = "";
-  document.getElementById("itemHP").value = "";
-  document.getElementById("itemAC").value = "";
-
-  var obj = {name: name, initiative: initiative, hp: hp, ac:ac};
-  units.push(obj);
-  DisplayUnits();
-  return false;
 }
 
 function ResetGame() {

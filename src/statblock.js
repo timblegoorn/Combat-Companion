@@ -487,22 +487,24 @@
   }
   
   // Statblock HTML template and CSS provided from: https://codepen.io/retractedhack/pen/gPLpWe
-  function RenderStatBlock(statblock, draggable) {
+  function RenderStatBlock(statblock, options = {}) {
     const sb = statblock;
     var str = `<div class="stat-block">
       <hr class="orange-border" />
       <div class="section-left">
         <div class="creature-heading">`
 
-    if (draggable) {
+    if (options.draggable) {
       str += `<h1>${sb.name}</h1>`
     } else {
       str +=`
       <h1>${sb.name} <i class="fa-solid fa-arrow-up-right-from-square icon" onclick="PopoutSB(event)"></i></h1>
-      <span class="icon text" onclick="EditCurrentStatBlock()"><i class="fa-solid fa-pen-to-square icon"></i> Edit Statblock</span>
-      <br>
-      <span class="icon text" onclick="AddCurrentStatBlockToCombat()"><i class="fa-solid fa-plus icon"></i> Add to Combat With Initiative: </span>
-      <input class="statblockNumberInput" type="number" min="1" max="40" id="statblock-initiative" name="statblock-initiative">`;
+      <span class="icon text" onclick="EditCurrentStatBlock()"><i class="fa-solid fa-pen-to-square icon"></i> Edit Statblock</span>`
+      if (options.addable) {
+        str += `<br>
+        <span class="icon text" onclick="AddCurrentStatBlockToCombat()"><i class="fa-solid fa-plus icon"></i> Add to Combat With Initiative: </span>
+        <input class="statblockNumberInput" type="number" min="1" max="40" id="statblock-initiative" name="statblock-initiative">`
+      }
     }
         if (sb.control_type == undefined || sb.control_type == 'Enemy') {
           str += `
@@ -762,7 +764,7 @@
     draggableWindow.id = `draggable-${draggableID}`;
     draggableWindow.className = `draggable`
     draggableID++;
-    var str = RenderStatBlock(sb, true);
+    var str = RenderStatBlock(sb, {draggable: true});
     draggableWindow.innerHTML = str;
     document.getElementById("contentContainer").append(draggableWindow);
     draggableWindow.innerHTML += `<i class="fa-solid fa-x icon rightCorner dragCorner" onclick="this.parentNode.remove()"></i>`;
@@ -826,15 +828,15 @@
         if (newLeft < 0) newLeft = 0;
         if (newTop < 0) newTop = 0;
         if (newLeft + document.getElementById(draggingID).offsetWidth > window.innerWidth) newLeft = window.innerWidth - document.getElementById(draggingID).offsetWidth;
-        if (newTop + document.getElementById(draggingID).offsetHeight > window.innerHeight) newTop = window.innerHeight - document.getElementById(draggingID).offsetHeight;
+        //if (newTop + document.getElementById(draggingID).offsetHeight > window.innerHeight) newTop = window.innerHeight - document.getElementById(draggingID).offsetHeight;
         document.getElementById(draggingID).style.top = newTop + "px";
         document.getElementById(draggingID).style.left = newLeft + "px";
       }
     };
   }
 
-  function DisplayStatBlock(sb) {
-    var str = RenderStatBlock(sb)
+  function DisplayStatBlock(sb, options) {
+    var str = RenderStatBlock(sb, options)
     document.getElementById('statblockZone').innerHTML = str; 
   }
 
@@ -1007,18 +1009,22 @@
 
   function AddBasicUnit() {
     let copiedSB = JSON.parse(JSON.stringify(blankStatblock));
-
     currentStatBlock = copiedSB;
     currentStatBlock.id = crypto.randomUUID();
-    RenderUnit(currentStatBlock.id);
-    DisplayStatBlock(currentStatBlock)
+    
+    document.getElementById('statblockZone').innerHTML = ""; 
+    
+    RenderUnit("newSB-Monster");
+    //DisplayStatBlock(currentStatBlock)
   }
 
   function AddNewPC() {
     let copiedSB = JSON.parse(JSON.stringify(blankPCStatblock));
-
     currentStatBlock = copiedSB;
     currentStatBlock.id = crypto.randomUUID();
-    RenderUnit(currentStatBlock.id);
-    DisplayStatBlock(currentStatBlock)
+    
+    document.getElementById('statblockZone').innerHTML = ""; 
+    
+    RenderUnit("newSB-PC");
+    //DisplayStatBlock(currentStatBlock)
   }
