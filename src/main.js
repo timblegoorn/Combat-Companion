@@ -396,7 +396,8 @@ function RenderUnit(id) {
     var str = `
       <div class="quickInfoContainer">
       <hr class="orange-border top" />
-      <h1><input class="h1Input" type="text" id="quickview-name" name="statblockName" maxlength="40" value="Monster"></h1>`;
+      <input class="h1Input" type="text" id="quickview-name" name="statblockName" maxlength="40" value="Monster"><br>
+      <i>(This is a new unit not yet in combat or saved. Set some stats and add to combat, or generate and edit a preset statblock.)</i><br><br>`;
 
     str += `
       <button type="button" onclick="">Generate Basic Statblock</button> 
@@ -420,7 +421,12 @@ function RenderUnit(id) {
     var str = `
       <div class="quickInfoContainer">
       <hr class="orange-border top" />
-      <h1><input class="h1Input" type="text" id="quickview-name" name="statblockName" maxlength="40" value="${sb.name}"></h1>`
+      <input class="h1Input" type="text" id="quickview-name" name="statblockName" maxlength="40" value="${sb.name}"><br>`
+    if (currentTurn == arrIndex) {
+      str += `<i>(It is currently this unit's turn)</i>`
+    } else {
+      str += `<br>`
+    }
     if (sb.control_type == "PC" && sb.death_saves_failed != undefined) {
       str += `<h2>`
       if (sb.death_saves_failed > 0 || sb.current_hit_points == 0)

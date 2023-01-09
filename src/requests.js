@@ -93,7 +93,7 @@ function ClickSearchedItem(id) {
     let copiedSB = JSON.parse(JSON.stringify(foundMonster));
     currentStatBlock = copiedSB;
     //RenderEditableStatBlock(foundMonster);
-    DisplayStatBlock(currentStatBlock);
-    RenderUnit(currentStatBlock);
+    DisplayStatBlock(currentStatBlock, {addable: true});
+    RenderUnit(false);
   }
 }
