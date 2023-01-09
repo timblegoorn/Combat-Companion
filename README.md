@@ -20,7 +20,7 @@ Present notable features include:
 Future features will include:
 - Dynamic and improved saving and loading system to save and access a list of custom PCs and monsters with option to export and import
 - Keeping track of special features like breath weapons
-- Apply dammage in bulk (e.g., fireball cast, mark which enemies are hit, roll Dex saves, and automatically apply damage appropriately)
+- Apply damage in bulk (e.g., fireball cast, mark which enemies are hit, roll Dex saves, and automatically apply damage appropriately)
 - Further implementation of the Open5E API to access spell descriptions dynamically
 - Polish
 
@@ -45,7 +45,7 @@ Make sure to use a Javascript enabled modern web browser, such as the latest ver
 - 0.2
   - Functional implementation connected to Open5E API
   - Stylized statblocks and initiative tracking
-  - Status effect tracking, XP Tracking, HP modification, Full Statblock modification
+  - Status effect tracking, XP tracking, HP modification, full statblock modification
   - Turn & round tracking
 - 0.1
   - Initial Release. Basic initiative ordering
