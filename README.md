@@ -22,6 +22,7 @@ Future features will include:
 - Keeping track of special features like breath weapons
 - Apply dammage in bulk (e.g., fireball cast, mark which enemies are hit, roll Dex saves, and automatically apply damage appropriately)
 - Further implementation of the Open5E API to access spell descriptions dynamically
+- Polish
 
 ## Getting Started
 ### Installing
