@@ -1,7 +1,7 @@
 # Combat Companion - Dungeons & Dragons DM Tool to Track Combat
 ## Description
 
-Combat Companion is a simple web-based app that allows combat/encounter tracking and features for Dungeons &amp; Dragons
+Combat Companion is a simple web-based app that allows combat/encounter tracking and features for Dungeons &amp; Dragons. You can view the latest release live here: [Combat-Companion.Nexodus.net](https://combat-companion.nexodus.net)
 
 Present notable features include:
 
