@@ -5,7 +5,7 @@ Combat Companion is a simple web-based app that allows combat/encounter tracking
 
 Present notable features include:
 
-- Connected Open5E API to access predefined statblocks. By default, shows all statblocks in alphabetical order, but can also search by keyword.
+- Connected to Open5E API to access predefined statblocks. By default, shows all statblocks in alphabetical order, but can also search by keyword.
 - Create your own statblocks for enemies or PCs
 - Initiative tracking
 - Styled display of current combat and recreated statblocks
