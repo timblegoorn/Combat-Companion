@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Combat Companion V0.2</title>
+  <title>Combat Companion - D&amp;D Initiative Tracker</title>
   <link rel="stylesheet" href="style/main.css">
   <link rel="stylesheet" href="style/statblock.css">
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 </head>
 <body>
 
   
   <div id="contentContainer">
     <div id="logoTitle">
-      <h1 class="title">Combat Companion V0.1</h1>
+      <h1 class="title">Combat Companion</h1>
     </div>
 
     <div class="divBlocks">
-      <button onclick="AddBasicUnit()">New Enemy</button><button onclick="AddNewPC()">New PC</button>
+      <button onclick="AddQuickUnit()">Quick Add Unit</button><button onclick="AddBasicUnit()">Add Unit</button>
       <div class="flex-container">
         <div class="divInlineBlocks" id="unitDisplay"></div>
 
@@ -60,16 +61,15 @@
     </div>
     <br>
     <div id="list" class="divBlocks"></div>
-    <br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br>
 
     <div id="popupContainer" onclick="HidePopup(event)">
       <div id="popup" onclick="event.stopPropagation()"></div>
     </div>
+  </div>
+  <div id="footerContainer">
+    Created by <a href="https://nexodus.net/about">Andrew Jacobsson</a><br>
+    This is open source! Contribute on our <a href="https://github.com/timblegoorn/Combat-Companion">GitHub Page</a><br>
+    <a href="https://open5e.com/">Open5e</a> Content Licensed Under <a href="docs/SRD-OGL_V1.1.pdf">Open Gaming License Version 1.0a</a>
   </div>
 
   <script src="src/main.js"></script>

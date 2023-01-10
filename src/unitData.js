@@ -183,7 +183,8 @@ var blankPCStatblock =   {
     "document__slug": "custom",
     "document__title": "custom",
     "document__license_url": "https://github.com/timblegoorn/Combat-Companion",
-    "control_type": "PC"
+    "control_type": "PC",
+    "notes": "",
 }
 
 var blankStatblock = {
@@ -251,7 +252,9 @@ var blankStatblock = {
   "img_main": null,
   "document__slug": "custom",
   "document__title": "custom",
-  "document__license_url": "https://github.com/timblegoorn/Combat-Companion"
+  "document__license_url": "https://github.com/timblegoorn/Combat-Companion",
+  "control_type": "Enemy",
+  "notes": "",
 };
 
 var currentStatBlock = blankStatblock;

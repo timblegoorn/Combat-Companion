@@ -76,7 +76,8 @@ function DisplayUnits() {
           else numPCs++;
         } else {
           numEnemies++;
-          var xp = challengeRatingXPTable[unit.challenge_rating];
+          var xp = unit.xp;
+          if (unit.challenge_rating != undefined) xp = challengeRatingXPTable[unit.challenge_rating];
           maxExp += xp;
           if (unit.current_hit_points == 0) {
             row.className = "dead";
@@ -106,7 +107,8 @@ function DisplayUnits() {
           }
         }
       }
-      if (dataVal == undefined) dataVal = `<i class="fa-solid fa-pen-to-square icon" onclick="EditStatBlock(event, '${unit.id}')"></i>`;
+      if (dataVal == undefined || dataVal == "") dataVal = `&ndash;`
+      //dataVal = `<i class="fa-solid fa-pen-to-square icon" onclick="EditStatBlock(event, '${unit.id}')"></i>`;
 
       rowVal.innerHTML = dataVal;
       row.appendChild(rowVal);
@@ -149,8 +151,8 @@ function ConfirmDeleteUnit(index) {
   HidePopup();
 
   units.splice(index,1);
-  if (currentTurn >= units.length) currentTurn = 0;
-  DisplayUnits();
+  currentStatBlock = undefined;
+  incrementTurn(true);
 }
 
 function DeleteUnit(id) {
@@ -283,9 +285,9 @@ function HidePopup(e) {
   document.getElementById("popup").style.display = "none";
 }
 
-function incrementTurn() {
+function incrementTurn(stay) {
   if (units.length == 0) return;
-  currentTurn++;
+  if (!stay) currentTurn++;
 
   if (currentTurn == units.length) {
     currentTurn = 0;
@@ -314,6 +316,14 @@ function incrementTurn() {
   DisplayUnits();
   RenderUnit(currentStatBlock.id);
   DisplayStatBlock(currentStatBlock);
+}
+
+function RenderUnitChoice() {
+  var str = `<br><h1 class='themeDisplay'>Add a New Unit</h1>`;
+  
+  str += `<button type="button" onclick="AddQuickUnit()">Quick Add New Unit</button><br>`
+  str += `<button type="button" onclick="AddBasicUnit()">Add New Unit</button><br>`
+  DisplayPopup(str)  
 }
 
 function RenderDeathSavingThrows(id) {
@@ -396,18 +406,60 @@ function RenderUnit(id) {
     var str = `
       <div class="quickInfoContainer">
       <hr class="orange-border top" />
-      <input class="h1Input" type="text" id="quickview-name" name="statblockName" maxlength="40" value="Monster"><br>
-      <i>(This is a new unit not yet in combat or saved. Set some stats and add to combat, or generate and edit a preset statblock.)</i><br><br>`;
+      <input class="h1Input" type="text" id="quickview-name" name="statblockName" maxlength="40" value="Unit Name"><br>
+      <i>(This is a new unit not yet in combat or saved that does NOT have a full statblock. Set some stats and add to combat. Click "Add Unit" instead to access full statblock editor)</i><br>`;
+     
+    str += `
+    <br><b>Unit Type</b><br>
+    <input type="radio" id="quickviewEnemy-control_type" name="quickview-control_type" value="Enemy" checked>
+      <label for="quickviewEnemy-control_type">Enemy (Gives XP)</label><br>
+      <input type="radio" id="quickviewPC-control_type" name="quickview-control_type" value="PC">
+      <label for="quickviewPC-control_type">Player Character (Can make death saves, gets XP)</label><br>
+      <input type="radio" id="quickviewNeutral-control_type" name="quickview-control_type" value="Neutral">
+      <label for="quickviewNeutral-control_type">Neutral Character (Will not give XP, does not get XP)</label><br>`;
+    str += `<b>Max Hit Points:</b><br>
+    <input class="statblockNumberInput" type="number" min="1" max="999" id="quickview-hit_points" name="statblockHP" value="10"><br>`
+
+    str += `<b><label for="statblock-initiative">Initiative (Leave blank to automatically roll):</label></b><br>
+    <input class="statblockNumberInput" type="number" min="1" max="40" id="statblock-initiative" name="statblock-initiative"><br>`
+
+    str += `<b>Armor Class (optional):</b><br>
+    <input class="statblockNumberInput" type="number" min="1" max="40" id="quickview-armor_class" name="statblockAC" value=""><br>`
 
     str += `
-      <button type="button" onclick="">Generate Basic Statblock</button> 
-      <br>
-      <span class="icon text" onclick="AddCurrentStatBlockToCombat()"><i class="fa-solid fa-plus icon"></i> Add to Combat With Initiative: </span>
-      <input class="statblockNumberInput" type="number" min="1" max="40" id="statblock-initiative" name="statblock-initiative">`;
+    <b>Notes (optional):</b><br><textarea class="statblockTextArea" id="quickview-notes">${currentStatBlock.notes}</textarea><br>`
     str += `
+    <br><br>
+    <button type="button" onclick="QuickAddToCombat()">Add To Combat</button>`
+    
+    str += `
+    <br>
+    `
+    
+      str += `
       <hr class="orange-border bottom" />
       </div>
       `;
+    document.getElementById("unitZone").innerHTML = str;
+    document.getElementById("unitZone").querySelectorAll("input, textarea").forEach((elem) => elem.addEventListener("change", HandleStatBlockEdit));
+  } else if (id == "newSB") {
+    var str = `
+    <div class="quickInfoContainer">
+    <hr class="orange-border top" />
+    <h1>Adding New Unit</h1>
+    <i>Below contains a basic example statblock to freely edit. You can also switch between preset statblocks to use as a template
+    through the below buttons.</i><br><br>`;
+  
+    str += `
+    <div class="centered">
+      <button onclick="AddNewPC()">PC Statblock</button><button onclick="AddBasicUnit()">Monster Statblock</button>
+    </div>
+    `
+
+    str += `
+    <hr class="orange-border bottom" />
+    </div>
+    `;
     document.getElementById("unitZone").innerHTML = str;
   } else if (!id) {
     document.getElementById("unitZone").innerHTML = "";
@@ -437,6 +489,7 @@ function RenderUnit(id) {
     }
   
     str += `
+      <h2>AC: ${sb.armor_class}</h2>
       <h2> Current HP ${sb.current_hit_points}/${sb.hit_points}</h2>
       <button type="button" onclick="HealUnit('${sb.id}')">Heal</button>
       <div class="number-input big">

@@ -5,6 +5,10 @@
 
   function RenderEditableStatBlock(statblock) {
     const sb = statblock;
+    if (sb.quickAdd) {
+      document.getElementById('statblockZone').innerHTML = "";  
+      return;
+    }
 
     // Name, size, type, alignment
     var str = `
@@ -13,10 +17,10 @@
       <div class="section-left">
         <div class="creature-heading">
           <h1><input class="h1Input" type="text" id="statblock-name" name="statblockName" maxlength="40" value="${sb.name}"></h1>
-          <span class="icon text" onclick="SaveCurrentStatBlock()"><i class="fa-solid fa-floppy-disk icon"></i> Save Statblock</span>`;
-        if (sb.control_type == 'PC') {
-          str += `<h2>Player Character</h2>`
-        }
+          <span class="icon text" onclick="SaveCurrentStatBlock()"><i class="fa-solid fa-floppy-disk icon"></i> Save Statblock</span>
+          <br>
+        <span class="icon text" onclick="AddCurrentStatBlockToCombat()"><i class="fa-solid fa-plus icon"></i> Add to Combat With Initiative: </span>
+        <input class="statblockNumberInput" type="number" min="1" max="40" id="statblock-initiative" name="statblock-initiative">`;
         str += `
           <h2>
             <select class="statblockSelect italic" name="statblock" id="statblock-size">
@@ -55,6 +59,11 @@
               <option value="neutral evil">neutral evil</option>
               <option value="chaotic evil">chaotic evil</option>
               <option value="unaligned">unaligned</option>
+            </select>
+            <select class="statblockSelect italic" name="statblockControlType" id="statblock-control_type">
+              <option value="Enemy">Enemy</option>
+              <option value="PC">Player Character</option>
+              <option value="Neutral Character">Neutral Character</option>
             </select>
           </h2>
         </div> <!-- creature heading -->
@@ -378,6 +387,7 @@
     document.getElementById("statblock-size").value = sb.size;
     document.getElementById("statblock-type").value = sb.type;
     document.getElementById("statblock-alignment").value = sb.alignment;
+    document.getElementById("statblock-control_type").value = sb.control_type;
     document.getElementById("statblock-challenge_rating").value = sb.challenge_rating
 
     for (const skill in sb.skills) {
@@ -489,6 +499,11 @@
   // Statblock HTML template and CSS provided from: https://codepen.io/retractedhack/pen/gPLpWe
   function RenderStatBlock(statblock, options = {}) {
     const sb = statblock;
+    if (sb.quickAdd) {
+      document.getElementById('statblockZone').innerHTML = "";  
+      return "";
+    }
+
     var str = `<div class="stat-block">
       <hr class="orange-border" />
       <div class="section-left">
@@ -500,7 +515,10 @@
       str +=`
       <h1>${sb.name} <i class="fa-solid fa-arrow-up-right-from-square icon" onclick="PopoutSB(event)"></i></h1>
       <span class="icon text" onclick="EditCurrentStatBlock()"><i class="fa-solid fa-pen-to-square icon"></i> Edit Statblock</span>`
-      if (options.addable) {
+      // See if monster already exists in initiative
+      let arrIndex = units.findIndex(unit => unit.id === sb.id);
+      
+      if (options.addable || arrIndex < 0) {
         str += `<br>
         <span class="icon text" onclick="AddCurrentStatBlockToCombat()"><i class="fa-solid fa-plus icon"></i> Add to Combat With Initiative: </span>
         <input class="statblockNumberInput" type="number" min="1" max="40" id="statblock-initiative" name="statblock-initiative">`
@@ -835,7 +853,11 @@
     };
   }
 
-  function DisplayStatBlock(sb, options) {
+  function DisplayStatBlock(sb = false, options) {
+    if (sb == false) {
+      document.getElementById('statblockZone').innerHTML = ""; 
+      return;
+    }
     var str = RenderStatBlock(sb, options)
     document.getElementById('statblockZone').innerHTML = str; 
   }
@@ -990,10 +1012,22 @@
     DisplayStatBlock(currentStatBlock);
   }
 
+  function QuickAddToCombat() {
+    currentStatBlock.control_type = document.querySelector(`[name="quickview-control_type"]:checked`).value,
+    currentStatBlock.hit_points = document.getElementById("quickview-hit_points").value
+    currentStatBlock.armor_class = document.getElementById("quickview-armor_class").value
+    currentStatBlock.notes = document.getElementById("quickview-notes").value
+
+    let id = AddCurrentStatBlockToCombat();
+    RenderUnit(id);
+  }
+
   function AddCurrentStatBlockToCombat() {
     // Get the value of the input field
-    if (document.getElementById("statblock-initiative").value == '') var initiative = Math.floor(Math.random() * 20) + 1 + parseInt(abilityModifierTable[currentStatBlock.dexterity]);
-    else var initiative = document.getElementById("statblock-initiative").value
+    if (document.getElementById("statblock-initiative").value == '') {
+      var initiative = Math.floor(Math.random() * 20) + 1;
+      if (currentStatBlock.dexterity != undefined) initiative += parseInt(abilityModifierTable[currentStatBlock.dexterity]);
+    } else var initiative = document.getElementById("statblock-initiative").value
 
     if (currentStatBlock.current_hit_points == undefined) currentStatBlock.current_hit_points = currentStatBlock.hit_points;
     if (currentStatBlock.control_type == undefined) currentStatBlock.control_type = "Enemy";
@@ -1004,7 +1038,28 @@
     console.log(copiedSB.id)
     units.push(copiedSB);
     DisplayUnits();
-    return false;  
+    return copiedSB.id;  
+  }
+
+  function AddQuickUnit() {
+    let sb = {
+      name: "Unit Name",
+      hit_points: 10,
+      armor_class: undefined,
+      notes: "",
+      status_effects: {},
+      control_type: "Enemy",
+      quickAdd: true,
+      xp: 0,
+      id: crypto.randomUUID()
+    }
+    
+    
+
+    currentStatBlock = sb;
+    document.getElementById('statblockZone').innerHTML = ""; 
+    
+    RenderUnit("newSB-Monster");
   }
 
   function AddBasicUnit() {
@@ -1012,10 +1067,8 @@
     currentStatBlock = copiedSB;
     currentStatBlock.id = crypto.randomUUID();
     
-    document.getElementById('statblockZone').innerHTML = ""; 
-    
-    RenderUnit("newSB-Monster");
-    //DisplayStatBlock(currentStatBlock)
+    RenderUnit("newSB");
+    RenderEditableStatBlock(currentStatBlock)
   }
 
   function AddNewPC() {
@@ -1023,8 +1076,7 @@
     currentStatBlock = copiedSB;
     currentStatBlock.id = crypto.randomUUID();
     
-    document.getElementById('statblockZone').innerHTML = ""; 
-    
-    RenderUnit("newSB-PC");
+    RenderUnit("newSB");
+    RenderEditableStatBlock(currentStatBlock)
     //DisplayStatBlock(currentStatBlock)
   }
