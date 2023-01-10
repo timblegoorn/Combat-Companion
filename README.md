@@ -53,7 +53,7 @@ Make sure to use a Javascript enabled modern web browser, such as the latest ver
 ## License
 This project is licensed under the GPL-3.0 license - see the [License](LICENSE) File
 
-Wizards of the Coast content provided under the terms of the [Open Gaming License Version 1.0a](https://www.improved-initiative.com/SRD-OGL_V1.1.pdf)
+Wizards of the Coast content provided under the terms of the [Open Gaming License Version 1.0a](docs/SRD-OGL_V1.1.pdf)
 
 ## Acknowledgements
 - [Open5e](https://open5e.com/) For providing a fast, high-quality, free API for D&D
