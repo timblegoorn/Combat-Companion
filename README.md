@@ -15,7 +15,7 @@ Present notable features include:
 - Encounter XP tracking (total available, earned, and amount divided between PCs)
 - Current HP modification
 
-![image](https://user-images.githubusercontent.com/43420737/211461056-804b964c-4699-442d-a461-820b47e5020e.png)
+![image](https://user-images.githubusercontent.com/43420737/211697421-7a2fea34-3899-4f17-9448-a81edc2fd9ba.png)
 
 Future features will include:
 - Dynamic and improved saving and loading system to save and access a list of custom PCs and monsters with option to export and import
