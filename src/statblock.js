@@ -1,8 +1,22 @@
-  // Statblock HTML template and CSS provided from: https://codepen.io/retractedhack/pen/gPLpWe
-  // Editable stat block contains all possible fields. Final rendered statblock only contains provided information
+/**
+ * Handles statblock display and edits
+ * 
+ * Code pertaining to the display of the unit list, ordering of unit list, and quick actions associated with
+ * the table display.
+ *
+ * @author Andrew Jacobsson, Chad Carteret (for initial statblock template https://codepen.io/retractedhack/pen/gPLpWe)
+ * @since  v0.1
+ */
 
-  var draggableID = 0;
 
+  /**
+   * Renders an editable statblock based on the pased in statblock object
+   * 
+   * If the statblock has the property "quickAdd" set to true, then no statblock will display.
+   * (this is if the unit was quick added and no full statblock was set)
+   * 
+   * @param {statblock object} statblock must be a valid statblock object
+   */
   function RenderEditableStatBlock(statblock) {
     const sb = statblock;
     if (sb.quickAdd) {
@@ -396,11 +410,17 @@
       document.getElementById(`statblockSkillType-${skill}`).value = skill;
     }
 
-    //document.getElementById("statblockSize").addEventListener('input', UpdateSearchResults);
     document.getElementById("stat-block-edit").querySelectorAll("input, select, span.statblockTextInput").forEach((elem) => elem.addEventListener("input", HandleStatBlockEdit));
   }
 
-  // Handles input to the current editable stat block and updates the current relevant statblock object properties accordingly
+
+  /**
+   * Handles input to the current editable stat block and updates the current 
+   * relevant statblock object properties accordingly
+   * 
+   * @param {*} e event 
+   * @returns 
+   */
   function HandleStatBlockEdit(e) {
     var elementID = e.target.id;
     var editContent, newKey, oldKey;
@@ -493,10 +513,15 @@
       oldKey = elementID.slice(elementID.lastIndexOf('-')+1);
       currentStatBlock[oldKey] = editContent;
     }
-    //RenderEditableStatBlock(currentStatBlock);
   }
   
-  // Statblock HTML template and CSS provided from: https://codepen.io/retractedhack/pen/gPLpWe
+  /**
+   * Renders a display version of the statblock with the option to edit and pop out.
+   * 
+   * @param {*} statblock statblock object
+   * @param {*} options object of options. If "draggable" is true, the statblock can be drug around. If "addable" is true, statblock can be added to combat
+   * @returns 
+   */
   function RenderStatBlock(statblock, options = {}) {
     const sb = statblock;
     if (sb.quickAdd) {
@@ -509,6 +534,7 @@
       <div class="section-left">
         <div class="creature-heading">`
 
+    // Render name and top stats
     if (options.draggable) {
       str += `<h1>${sb.name}</h1>`
     } else {
@@ -553,7 +579,6 @@
             <p>`
     
     // Iterate through speed string
-    // TODO make speed editable
     for (const speedType in sb.speed) {
       if (speedType == 'hover') {
         str += `(Can <b>Hover</b>) `;
@@ -769,112 +794,54 @@
     return str;
   }
 
-  function PopoutSB(e) {
-    var id = DisplayDraggableStatBlock(currentStatBlock);
-    document.getElementById(id).style.left = e.clientX + "px";
-    document.getElementById(id).style.top = e.clientY + "px";
-  }
 
-
-  var dragging = false;
-  function DisplayDraggableStatBlock(sb) {
-    const draggableWindow = document.createElement('div');
-    draggableWindow.id = `draggable-${draggableID}`;
-    draggableWindow.className = `draggable`
-    draggableID++;
-    var str = RenderStatBlock(sb, {draggable: true});
-    draggableWindow.innerHTML = str;
-    document.getElementById("contentContainer").append(draggableWindow);
-    draggableWindow.innerHTML += `<i class="fa-solid fa-x icon rightCorner dragCorner" onclick="this.parentNode.remove()"></i>`;
-    draggableWindow.innerHTML += `<i class="fa-solid fa-grip leftCorner dragCorner"></i>`;
-    
-    const collection = draggableWindow.getElementsByClassName("orange-border");
-    collection[0].className = "orange-border draggable"
-
-
-    document.getElementById(draggableWindow.id).addEventListener("mousedown", startDrag);
-    return draggableWindow.id;
-  }
-
-  var dragging = false;
-  var draggingID;
-  var dragStart = {x:0,y:0};
-  function startDrag(e) {
-    var el = e.target;
-    if (el.className != "orange-border draggable") return;
-    e = e || window.event;
-    e.preventDefault();
-    dragging = true;
-
-    if (el.id.includes("draggable")) {
-      draggingID = el.id;
-    } else {
-      while (el && el.parentNode) {
-        el = el.parentNode;
-        if (el.id.includes("draggable")) {
-          draggingID = el.id;
-          break;
-        }
-      }
-    }
-
-    dragStart.x = e.clientX;
-    dragStart.y = e.clientY;
-    document.onmouseup = stopDrag;
-    // call a function whenever the cursor moves:
-    document.onmousemove = handleDrag;
-  }
-
-  function stopDrag(e) {
-    dragging = false;
-    draggingID = undefined;
-    document.onmouseup = null;
-    document.onmousemove = null;
-  }
-
-  function handleDrag(e) {
-    e = e || window.event;
-    e.preventDefault();
-    lastDifference.x = dragStart.x - e.clientX;
-    lastDifference.y = dragStart.y - e.clientY;
-    dragStart.x = e.clientX;
-    dragStart.y = e.clientY;
-    if (dragging) {
-      if (draggingID != undefined) {
-        var newLeft = (document.getElementById(draggingID).offsetLeft - lastDifference.x);
-        var newTop = (document.getElementById(draggingID).offsetTop - lastDifference.y);
-        if (newLeft < 0) newLeft = 0;
-        if (newTop < 0) newTop = 0;
-        if (newLeft + document.getElementById(draggingID).offsetWidth > window.innerWidth) newLeft = window.innerWidth - document.getElementById(draggingID).offsetWidth;
-        //if (newTop + document.getElementById(draggingID).offsetHeight > window.innerHeight) newTop = window.innerHeight - document.getElementById(draggingID).offsetHeight;
-        document.getElementById(draggingID).style.top = newTop + "px";
-        document.getElementById(draggingID).style.left = newLeft + "px";
-      }
-    };
-  }
-
+  /**
+   * Helper function to display the statblock from the passed statblock
+   * 
+   * @param {*} sb unit statblock
+   * @param {*} options options include "draggable" and "addable" which may be boolean
+   * @returns 
+   */
   function DisplayStatBlock(sb = false, options) {
+    document.getElementById('statblockZone').innerHTML = ""; 
     if (sb == false) {
-      document.getElementById('statblockZone').innerHTML = ""; 
       return;
     }
     var str = RenderStatBlock(sb, options)
     document.getElementById('statblockZone').innerHTML = str; 
   }
 
+
+  /**
+   * Adds a new speed to the editable statblock
+   */
   function sbAddSpeed() {
     var numSpeed = Object.keys(currentStatBlock.speed).length;
 
     currentStatBlock.speed[`Speed${numSpeed}`] = 30;
-    console.log(currentStatBlock)
     RenderEditableStatBlock(currentStatBlock);
   }
 
+
+  /**
+   * Removes the selected speed from the editable statblock
+   * 
+   * @param {string} speedType the speed key to remove
+   */
   function sbRemoveSpeed(speedType) {
     delete currentStatBlock.speed[speedType];
     RenderEditableStatBlock(currentStatBlock);
   }
 
+
+  /**
+   * Adds a random new valid skill proficiency. Since someone can not have duplicate skill proficiencies,
+   * this will recursively call until an unused skill is called.
+   * 
+   * TODO overhaul this function to use status effect design and be less stupid
+   * 
+   * @returns 
+   */
   function sbAddSkill() {
     var randSkillNum = Math.floor(Math.random() * skillList.length);
     var randSkill = skillList[randSkillNum];
@@ -883,11 +850,21 @@
     RenderEditableStatBlock(currentStatBlock);
   }
 
+
+  /**
+   * Removes the selected skill from the selected statblock
+   * 
+   * @param {string} skill the skill key to remove
+   */
   function sbRemoveSkill(skill) {
     delete currentStatBlock.skills[skill];
     RenderEditableStatBlock(currentStatBlock);
   }
 
+  
+  /**
+   * Adds a special ability to the selected statblock
+   */
   function sbAddSA() {
     var newSpecialAbility = {
       "name": "New Special Ability",
@@ -897,6 +874,10 @@
     RenderEditableStatBlock(currentStatBlock);
   }
 
+
+  /**
+   * Adds a special ability spell list to the selected statblock
+   */
   function sbAddSASpell() {
     var spellSaveDC = 8 + parseInt(abilityModifierTable[currentStatBlock.intelligence]) + parseInt(challengeRatingProficiencyBonusTable[currentStatBlock.challenge_rating]);
     var spellAttack = spellSaveDC - 8;
@@ -915,11 +896,21 @@
     RenderEditableStatBlock(currentStatBlock);
   }
 
+
+  /**
+   * Removes a special ability for the selected statblock
+   * 
+   * @param {string} specialAbility key value of special ability to remove
+   */
   function sbRemoveSA(specialAbility) {
     currentStatBlock.special_abilities.splice(specialAbility, 1);
     RenderEditableStatBlock(currentStatBlock);
   }
 
+
+  /**
+   * Adds an action to the selected statblock
+   */
   function sbAddAction() {
     var tempMod = parseInt(abilityModifierTable[currentStatBlock.strength]) + challengeRatingProficiencyBonusTable[currentStatBlock.challenge_rating];
     var newAction = {
@@ -930,16 +921,21 @@
     RenderEditableStatBlock(currentStatBlock);
   }
 
+
+  /**
+   * Removes an action from the selected statblock
+   * 
+   * @param {string} action key value of action to remove
+   */
   function sbRemoveAction(action) {
     currentStatBlock.actions.splice(action, 1);
     RenderEditableStatBlock(currentStatBlock);
   }
 
-  function sbRemoveLegendaryDescription() {
-    currentStatBlock.legendary_desc = "";
-    RenderEditableStatBlock(currentStatBlock);
-  }
 
+  /**
+   * Adds a legendary description to the selected statblock
+   */
   function sbAddLegendaryDescription() {
     var defaultLegendaryDescription = `The ${currentStatBlock.name} can take 3 legendary actions, choosing from the options below. 
     Only one legendary action option can be used at a time and only at the end of another creature's turn. 
@@ -949,6 +945,19 @@
     RenderEditableStatBlock(currentStatBlock);
   }
 
+  
+  /**
+   * Removes legendary description from selected statblock
+   */
+  function sbRemoveLegendaryDescription() {
+    currentStatBlock.legendary_desc = "";
+    RenderEditableStatBlock(currentStatBlock);
+  }
+
+  
+  /**
+   * Adds a legendary action to the selected statblock
+   */
   function sbAddLegendaryAction() {
     var newAction = {
       "name": "Bite Attack",
@@ -959,15 +968,33 @@
     RenderEditableStatBlock(currentStatBlock);
   }
 
+
+  /**
+   * Removes a legendary action from the selected statblock
+   * 
+   * @param {string} action key value of legendary action to remove
+   */
   function sbRemoveLegendaryAction(action) {
     currentStatBlock.legendary_actions.splice(action, 1);
     RenderEditableStatBlock(currentStatBlock);
   }
 
+
+  /**
+   * Renders the current statblock as editable
+   */
   function EditCurrentStatBlock() {
     RenderEditableStatBlock(currentStatBlock);
   }
 
+
+  /**
+   * Creates a deep copy of the selected unit (based on index) and sets the currentStatBlock
+   * to this copy and makes it editable.
+   * 
+   * @param {*} e event 
+   * @param {*} index index of unit to edit statblock of
+   */
   function EditStatBlock(e, index) {
     let copiedSB = JSON.parse(JSON.stringify(units[index]));
     currentStatBlock = copiedSB;
@@ -975,28 +1002,17 @@
     RenderEditableStatBlock(currentStatBlock);
   }
 
-  function ViewStatBlock(e, index) {
-    // prevent parent event propagation
 
-    if (e.target.className == "" || e.target.className == "selected" || e.target.className == "dead") {
-      const collection = document.getElementsByClassName("selected");
-      if (collection.length > 0) {
-        console.log(collection[0].className)
-        collection[0].className = collection[0].className.replace("selected", "");
-      }
-      e.target.parentNode.className += " selected";
-      let copiedSB = JSON.parse(JSON.stringify(units[index]));
-      currentStatBlock = copiedSB;
-      currentStatBlock.index = index;
-      RenderUnit(currentStatBlock.id);
-      DisplayStatBlock(currentStatBlock);
-    }
-  }
-
-  //units.some(unit => unit.id !== copiedSB.id)
+  /**
+   * Saves the currently edited statblock and updates display as needed
+   * 
+   * @returns 
+   */
   function SaveCurrentStatBlock() {
     let copiedSB = JSON.parse(JSON.stringify(currentStatBlock));
 
+    // If the statblock doesn't exist in the unit list, display edited statblock and exit early
+    // (this would be done if editing a predefined statblock)
     let arrIndex = units.findIndex(unit => unit.id === copiedSB.id);
     if (arrIndex < 0) {
       DisplayStatBlock(currentStatBlock);
@@ -1012,18 +1028,13 @@
     DisplayStatBlock(currentStatBlock);
   }
 
-  function QuickAddToCombat() {
-    currentStatBlock.control_type = document.querySelector(`[name="quickview-control_type"]:checked`).value,
-    currentStatBlock.hit_points = document.getElementById("quickview-hit_points").value
-    currentStatBlock.armor_class = document.getElementById("quickview-armor_class").value
-    currentStatBlock.notes = document.getElementById("quickview-notes").value
 
-    let id = AddCurrentStatBlockToCombat();
-    RenderUnit(id);
-  }
-
+  /**
+   * Adds the current statblock to combat, initializing values if necessary
+   * 
+   * @returns the id of the added unit
+   */
   function AddCurrentStatBlockToCombat() {
-    // Get the value of the input field
     if (document.getElementById("statblock-initiative").value == '') {
       var initiative = Math.floor(Math.random() * 20) + 1;
       if (currentStatBlock.dexterity != undefined) initiative += parseInt(abilityModifierTable[currentStatBlock.dexterity]);
@@ -1041,42 +1052,3 @@
     return copiedSB.id;  
   }
 
-  function AddQuickUnit() {
-    let sb = {
-      name: "Unit Name",
-      hit_points: 10,
-      armor_class: undefined,
-      notes: "",
-      status_effects: {},
-      control_type: "Enemy",
-      quickAdd: true,
-      xp: 0,
-      id: crypto.randomUUID()
-    }
-    
-    
-
-    currentStatBlock = sb;
-    document.getElementById('statblockZone').innerHTML = ""; 
-    
-    RenderUnit("newSB-Monster");
-  }
-
-  function AddBasicUnit() {
-    let copiedSB = JSON.parse(JSON.stringify(blankStatblock));
-    currentStatBlock = copiedSB;
-    currentStatBlock.id = crypto.randomUUID();
-    
-    RenderUnit("newSB");
-    RenderEditableStatBlock(currentStatBlock)
-  }
-
-  function AddNewPC() {
-    let copiedSB = JSON.parse(JSON.stringify(blankPCStatblock));
-    currentStatBlock = copiedSB;
-    currentStatBlock.id = crypto.randomUUID();
-    
-    RenderUnit("newSB");
-    RenderEditableStatBlock(currentStatBlock)
-    //DisplayStatBlock(currentStatBlock)
-  }

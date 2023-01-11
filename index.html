@@ -13,9 +13,12 @@
     <div id="logoTitle">
       <h1 class="title">Combat Companion</h1>
     </div>
-
+    <!-- Upper container block containing search and unit display -->
     <div class="divBlocks">
+      <!-- Add unit buttons -->
       <button onclick="AddQuickUnit()">Quick Add Unit</button><button onclick="AddBasicUnit()">Add Unit</button>
+      
+      <!-- Column display of search block and unit display -->
       <div class="flex-container">
         <div class="divInlineBlocks" id="unitDisplay"></div>
 
@@ -36,46 +39,41 @@
         <div class="divInlineBlocks" id="addContainer">
           <div id="unitZone"></div>
           <div id="statblockZone"></div>
-          <!--
-          Add a custom unit:
-          <br>
-          <i>*denotes required.</i>
-          <br><br>
-          <form onsubmit="return AddUnit()">
-            <label for="itemName">Unit Name*:</label><br>
-            <input type="text" id="itemName" name="itemName" maxlength="20" placeholder="Barilon Balkak" required autofocus autocomplete="on"><br>
-            <label for="itemHP">HP*:</label><br>
-            <input type="number" id="itemHP" name="itemHP" required><br>
-            <label for="itemInitiative">Initiative:</label><br>
-            <input type="number" id="itemInitiative" name="itemInitiative" placeholder="Ignore for Random Roll"><br>
-            <label for="itemAC">AC:</label><br>
-            <input type="number" id="itemAC" name="itemAC"><br>
-            <input type="submit" value="Submit">
-          </form> 
-        -->
         </div>
       </div>
+
+      <!-- Save/load buttons -->
       <button type="button" onclick="SaveGame()">Save Current Combat</button><button type="button" onclick="LoadGame()">Load Last Saved Combat</button><button type="button" onclick="ResetGame()">New Combat</button>
     
 
     </div>
     <br>
+    <!-- Lower container block containing list table and combat information -->
     <div id="list" class="divBlocks"></div>
 
+    <!-- Hidden container that shows contextual information on demand -->
     <div id="popupContainer" onclick="HidePopup(event)">
       <div id="popup" onclick="event.stopPropagation()"></div>
     </div>
   </div>
+
+  <!-- Footer containing credits and licensing -->
   <div id="footerContainer">
     Created by <a href="https://nexodus.net/about">Andrew Jacobsson</a><br>
     This is open source! Contribute on our <a href="https://github.com/timblegoorn/Combat-Companion">GitHub Page</a><br>
     <a href="https://open5e.com/">Open5e</a> Content Licensed Under <a href="docs/SRD-OGL_V1.1.pdf">Open Gaming License Version 1.0a</a>
   </div>
 
+  <!-- Scripts -->
   <script src="src/main.js"></script>
+  <script src="src/table.js"></script>
   <script src="src/requests.js"></script>
   <script src="src/statblock.js"></script>
   <script src="src/unitData.js"></script>
+  <script src="src/save.js"></script>
+  <script src="src/quickview.js"></script>
+  <script src="src/popup.js"></script>
+  <script src="src/listeners.js"></script>
   <script src="https://kit.fontawesome.com/b54a634fde.js" crossorigin="anonymous"></script>
 </body>
 </html>

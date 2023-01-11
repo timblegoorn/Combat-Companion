@@ -1,4 +1,11 @@
-// API accessed from https://api.open5e.com
+/**
+ * Handles API requests from https://api.open5e.com
+ * 
+ * Code pertaining to calling the API and handling requests and returned data
+ *
+ * @author Andrew Jacobsson.
+ * @since  v0.1
+ */
 
 // Stores the current searched list of monsters
 var monsterList = [];
@@ -7,7 +14,13 @@ var lastPost;
 // A lock to prevent multiple calls while currently loading the next page of the API list
 var loadingNewList = false;
 
-// Searches for monsters containing the provided string and updates the search list
+
+/**
+ * Searches for monsters containing the provided string and updates the search list
+ * 
+ * @param {string} string name(s) of monsters to filter by
+ * @returns 
+ */
 async function getMonstersByName(string) {
   if (loadingNewList) return;
     var url;
@@ -24,7 +37,11 @@ async function getMonstersByName(string) {
     DisplaySearchResults();
 }
 
-// Appends the existing monster search list (this is used if you have scrolled far enough to buffer additional results, if available)
+
+/**
+ * Appends the existing monster search list 
+ * (This is used if you have scrolled far enough to buffer additional results, if available)
+ */
 async function appendMonsterList() {
   const url = lastPost.next;
   const post = await fetch(url).then((res) => res.json());
@@ -38,7 +55,12 @@ async function appendMonsterList() {
   loadingNewList = false;
 }
 
-// Searches for monsters based on passed string
+
+/**
+ * Called when the search bar value is changed and searches for monsters based on passed string
+ * 
+ * @param {*} e event
+ */
 function UpdateSearchResults(e) {
     if (e.target.value.length > 0) {
         getMonstersByName(e.target.value);
@@ -47,13 +69,25 @@ function UpdateSearchResults(e) {
     }
 }
 
+
+/**
+ * Resets the search bar to blank and pulls in alphabetical list of monsters
+ * 
+ * @returns 
+ */
 function ResetSearchBar() {
   if (document.getElementById("monsterName").value == "") return;
   document.getElementById("monsterName").value = "";
   getMonstersByName("");
 }
 
-// Will load the next list of monsters (if applicable) if the bottom of the searched list is reached by scrolling
+
+/**
+ * Will load the next list of monsters (if applicable) if the bottom of the searched list is 
+ * reached by scrolling
+ * 
+ * @param {*} e event
+ */
 function ScrollSearchResults(e) {
   if (lastPost != undefined) {
     if (lastPost.next != null) {
@@ -66,7 +100,10 @@ function ScrollSearchResults(e) {
   }
 }
 
-// Renders the searched list of monsters in a list
+
+/**
+ * Renders the list of monsters in the HTML
+ */
 function DisplaySearchResults() {
   searchResults.innerHTML = "";
 
@@ -85,14 +122,18 @@ function DisplaySearchResults() {
 
 }
 
-// An onclick function to retrieve the statblock object of a clicked monster in the search list
+
+/**
+ * Called onclick of unit in search list to retrieve their statblock object
+ * 
+ * @param {string} id monster_slug (unique identifier) to retrieve
+ */
 function ClickSearchedItem(id) {
   var foundMonster = monsterList.find((monster) => monster.slug === id);
 
   if (foundMonster != undefined) {
     let copiedSB = JSON.parse(JSON.stringify(foundMonster));
     currentStatBlock = copiedSB;
-    //RenderEditableStatBlock(foundMonster);
     DisplayStatBlock(currentStatBlock, {addable: true});
     RenderUnit(false);
   }

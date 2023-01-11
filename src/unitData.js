@@ -1,3 +1,11 @@
+/**
+ * Data document containing basic conversion tables for statblocks and preset units.
+ * 
+ * @author Andrew Jacobsson.
+ * @since  v0.1
+ */
+
+
 // Modifier corresponding to ability score from 0-30 (index 0 based, which is never used but there as placeholder)
 const abilityModifierTable = [
     "-5", "-5", "-4", "-4", "-3", "-3", "-2", "-2",
