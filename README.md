@@ -42,12 +42,19 @@ Make sure to use a Javascript enabled modern web browser, such as the latest ver
 - [Andrew Jacobsson](https://nexodus.net/about)
 
 ## Version History
-- 0.2
+- v0.3
+  - Statblocks can be "popped out" and dragged around the screen for quick reference
+  - New "Quick Info" panel that displays relevant information about the currently selected unit and/or the current unit's turn with the option to heal or damage in bulk.
+  - New flow of adding units to combat with option to edit and add prebuilt statblocks as before, or perform a "Quick Add" which allows users to provide only the bare minimum information to add a unit to combat if they do not wish to customize a statblock.
+  - Added support for death saving throws for player characters. A new window opens on a player character's turn that forces the DM to perform a death saving throw. On 3 failed saves, the PC dies.
+  - Additional action buttons in the table to clone or delete existing units.
+  - Added "Notes" section for all units
+- v0.2
   - Functional implementation connected to Open5E API
   - Stylized statblocks and initiative tracking
   - Status effect tracking, XP tracking, HP modification, full statblock modification
   - Turn & round tracking
-- 0.1
+- v0.1
   - Initial Release. Basic initiative ordering
   
 ## License
