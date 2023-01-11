@@ -13,7 +13,10 @@
     <div id="logoTitle">
       <h1 class="title">Combat Companion</h1>
     </div>
-    <!-- Upper container block containing search and unit display -->
+    <!-- Upper container block containing list table and combat information -->
+    <div id="list" class="divBlocks"></div><br>
+
+    <!-- Lower container block containing search and unit display -->
     <div class="divBlocks">
       <!-- Add unit buttons -->
       <button onclick="AddQuickUnit()">Quick Add Unit</button><button onclick="AddBasicUnit()">Add Unit</button>
@@ -47,9 +50,7 @@
     
 
     </div>
-    <br>
-    <!-- Lower container block containing list table and combat information -->
-    <div id="list" class="divBlocks"></div>
+
 
     <!-- Hidden container that shows contextual information on demand -->
     <div id="popupContainer" onclick="HidePopup(event)">
