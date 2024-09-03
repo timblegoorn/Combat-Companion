@@ -29,14 +29,18 @@
           <form onsubmit="return false">
             <div class="relativeContainer">
               <input type="text" class="searchBar" id="monsterName" name="monsterName" maxlength="30" placeholder="Search any Open5E Monsters" required autocomplete="on">
+
               <i id="searchbarX" class="fa-solid fa-x icon" onclick="ResetSearchBar()"></i>
               <br>
             </div>
+            <!--<i id="searchbarSearch" class="fa-solid fa-magnifying-glass" onclick="UpdateSearchResults()"></i>-->
           </form> 
           <div class="orange-border-table"></div>
           <div id="searchResults" onscroll="ScrollSearchResults(event);">
 
           </div>
+          <div class="orange-border-table"></div>
+          <div id="searchCount">Results: </div>
           <div class="orange-border-table"></div>
         </div>
         <div class="divInlineBlocks" id="addContainer">
@@ -57,6 +61,9 @@
       <div id="popup" onclick="event.stopPropagation()"></div>
     </div>
   </div>
+
+
+</div>
 
   <!-- Footer containing credits and licensing -->
   <div id="footerContainer">

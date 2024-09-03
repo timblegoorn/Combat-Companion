@@ -528,11 +528,12 @@
       document.getElementById('statblockZone').innerHTML = "";  
       return "";
     }
-
     var str = `<div class="stat-block">
       <hr class="orange-border" />
       <div class="section-left">
         <div class="creature-heading">`
+
+
 
     // Render name and top stats
     if (options.draggable) {
@@ -739,7 +740,7 @@
           </div> <!-- top stats -->`
   
         // Special Abilities
-        if (sb.special_abilities.length > 0) {
+        if (sb.special_abilities != null && sb.special_abilities.length > 0) {
           for (let specialAbility of sb.special_abilities) {
             str+= `
             <div class="property-block spanOnce">
@@ -753,7 +754,7 @@
       <div class="section-right">`;
       
       // actions
-      if (sb.actions.length > 0) {
+      if (sb.actions != null && sb.actions.length > 0) {
           str += `
             <div class="actions">
               <h3>Actions</h3>`;
@@ -769,7 +770,7 @@
       }  
 
       // Legendary actions
-      if (sb.legendary_actions.length > 0) {
+      if (sb.legendary_actions != null && sb.legendary_actions.length > 0) {
         str += `
           <div class="actions">
             <h3>Legendary Actions</h3>
@@ -790,6 +791,11 @@
       </div> <!-- section right -->
       <hr class="orange-border bottom" />
     </div> <!-- stat block -->`;  
+
+
+    if (sb.document__slug != null) {
+      str += `<br>Statblock provided from <a href="${sb.document__url}">${sb.document__title}</a><br> Licensed under <a href="${sb.document__license_url}">${sb.document__license_url}</a>`
+    }
   
     return str;
   }

@@ -148,6 +148,38 @@ a:hover {
   top: 5px;
 }
 
+#searchbarSearch {
+  position:absolute;
+  right: 5px;
+  top: 5px;
+}
+
+#searchCount {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  background-color: #FDF1DC;
+}
+
+.searchTag {
+  border-radius: 3px;
+  border: 1px solid black;
+  width: fit-content;
+  margin-right: 5px;
+  padding: 0px 3px;
+}
+
+.searchTag.cr {
+  background-color: orange;
+}
+
+.searchTag.type {
+  background-color: rgb(255, 188, 63);
+}
+
+.searchName {
+  margin-right: auto;
+}
+
 .searchResultsUnit {
   font-family: 'Noto Sans', 'Myriad Pro', Calibri, Helvetica,
       Arial, sans-serif;
@@ -156,6 +188,7 @@ a:hover {
   padding: 5px;
   background-color: #FDF1DC;
   transition: all 0.2s;
+  display: flex;
 }
 
 .searchResultsUnit:nth-child(odd) {

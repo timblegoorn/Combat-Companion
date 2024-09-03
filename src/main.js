@@ -10,7 +10,7 @@ var currentRound = 1;
 // Current turn which corresponds to unit index
 var currentTurn = 0; 
 
-var searchBar, searchResults;
+var searchBar, searchResults, multi;
 
 // Initialize functions that needed to wait for document load
 window.addEventListener('load', Init);
@@ -23,7 +23,11 @@ function Init() {
   searchResults = document.getElementById("searchResults");
   searchBar = document.getElementById("monsterName");
 
-  searchBar.addEventListener('input', UpdateSearchResults);
+  searchBar.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      UpdateSearchResults();
+    }
+  });
 
   getMonstersByName(""); // get list of all monsters
   

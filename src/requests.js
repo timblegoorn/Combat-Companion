@@ -47,7 +47,6 @@ async function appendMonsterList() {
   const post = await fetch(url).then((res) => res.json());
   console.log(post);
   lastPost = post;
-
   for (const newMonster of post.results) {
     monsterList.push(newMonster);
   }
@@ -61,12 +60,8 @@ async function appendMonsterList() {
  * 
  * @param {*} e event
  */
-function UpdateSearchResults(e) {
-    if (e.target.value.length > 0) {
-        getMonstersByName(e.target.value);
-    } else {
-        getMonstersByName(e.target.value);
-    }
+function UpdateSearchResults() {
+  getMonstersByName(document.getElementById("monsterName").value);
 }
 
 
@@ -105,8 +100,9 @@ function ScrollSearchResults(e) {
  * Renders the list of monsters in the HTML
  */
 function DisplaySearchResults() {
+  var count = lastPost.count;
+  document.getElementById('searchCount').innerHTML = "Results: " + count;
   searchResults.innerHTML = "";
-
   if (monsterList.length == 0) {
     searchResults.innerHTML = "<br>No Results Found";
     return;
@@ -115,7 +111,7 @@ function DisplaySearchResults() {
     const listItem = document.createElement('div');
     listItem.className = "searchResultsUnit";
     listItem.id = `${monster.slug}`;
-    listItem.innerHTML = `${monster.name}`;
+    listItem.innerHTML = `<div class="searchName">${monster.name}</div><div class="searchTag type">${monster.type}</div><div class="searchTag cr">CR ${monster.challenge_rating}</div>`;
     listItem.onclick = function() {ClickSearchedItem(this.id);};
     searchResults.appendChild(listItem);
   }
