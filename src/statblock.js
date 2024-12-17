@@ -971,7 +971,7 @@
       "name": "Bite Attack",
       "desc": `The ${currentStatBlock.name} makes a bite attack.`
     }
-    if (currentStatBlock.legendary_actions == "") currentStatBlock.legendary_actions = [];
+    if (currentStatBlock.legendary_actions == "" || currentStatBlock.legendary_actions == null) currentStatBlock.legendary_actions = [];
     currentStatBlock.legendary_actions.push(newAction);
     RenderEditableStatBlock(currentStatBlock);
   }
