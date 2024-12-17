@@ -29,6 +29,7 @@ function Init() {
     }
   });
 
+  LoadSavedStatblocks();
   getMonstersByName(""); // get list of all monsters
   
   if (units.length > 0) {

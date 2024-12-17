@@ -312,6 +312,38 @@ function RenderUnit(id) {
 
 
   /**
+   * Setup import screen for adding a statblock
+   */
+  function ImportStatBlockPopup() {
+    DisplayPopup(`
+      <br><h1 class='themeDisplay'>Import Statblock</h1>
+      <i>NOTE: If a statblock is currently being edited, this will overwrite it. Please save and/or export to prevent losing any work.</i>
+      <br>
+      <h3>Paste statblock here. Currently, only one statblock can be imported at a time</h3>
+      <textarea class="statblock-import-area" id="statblock-import-data" placeholder="Paste statblock data in here..."></textarea><br><br><br>
+      <button type="button" onclick="ImportStatBlock()"><i class="fa-solid fa-file-export icon"></i> Import</button><br><br>
+      <br>
+    `);
+  }
+
+
+
+    /**
+   * Setup import screen for adding a statblock
+   */
+    function ImportStatBlock() {
+      let copiedSB = JSON.parse(document.getElementById("statblock-import-data").value);
+      currentStatBlock = copiedSB;
+      currentStatBlock.id = crypto.randomUUID();
+      SaveCurrentStatblockToStorage();
+      HidePopup();
+      
+      RenderUnit("newSB");
+      RenderEditableStatBlock(currentStatBlock)
+    }
+
+
+  /**
    * Uses a preset default player character statblock to set as the current statblock for statblock editing
    */
   function AddNewPC() {

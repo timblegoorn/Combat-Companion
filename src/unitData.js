@@ -267,6 +267,8 @@ var blankStatblock = {
 
 var currentStatBlock = blankStatblock;
 
+var customStatblocks = [];
+
 var units = [
     {
       "slug": "goblin",

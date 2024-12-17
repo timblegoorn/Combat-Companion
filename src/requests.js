@@ -13,7 +13,8 @@ var monsterList = [];
 var lastPost;
 // A lock to prevent multiple calls while currently loading the next page of the API list
 var loadingNewList = false;
-
+// Flag to include custom statblocks in results
+var includeCustom = true;
 
 /**
  * Searches for monsters containing the provided string and updates the search list
@@ -34,6 +35,18 @@ async function getMonstersByName(string) {
     console.log(post);
     lastPost = post;
     monsterList = post.results;
+
+    if (includeCustom) {
+      if (customStatblocks.length > 0) {
+        customStatblocks.forEach(unit => {
+          var strName = unit.name.toLowerCase();
+          if (strName.includes(string)) {
+            monsterList.push(unit);
+            lastPost.count++;
+          }
+        });
+      }
+    }
     DisplaySearchResults();
 }
 
@@ -53,6 +66,18 @@ async function appendMonsterList() {
   DisplaySearchResults();  
   loadingNewList = false;
 }
+
+/**
+ * Sets flag to include custom statblocks
+ */
+function IncludeCustomStatBlocksInSearch() {
+  includeCustom = document.getElementById("checkbox-include-custom-statblocks").checked
+  if (includeCustom && customStatblocks.length > 0) {
+    document.getElementById("searchCustomStatblocksInfo").style.display = "block";
+  }
+  UpdateSearchResults();
+}
+
 
 
 /**
@@ -100,13 +125,26 @@ function ScrollSearchResults(e) {
  * Renders the list of monsters in the HTML
  */
 function DisplaySearchResults() {
-  var count = lastPost.count;
-  document.getElementById('searchCount').innerHTML = "Results: " + count;
   searchResults.innerHTML = "";
   if (monsterList.length == 0) {
     searchResults.innerHTML = "<br>No Results Found";
     return;
   }
+  monsterList.sort((a, b) => {
+    const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+    const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+  
+    // names must be equal
+    return 0;
+  });
+  var count = lastPost.count;
+  document.getElementById('searchCount').innerHTML = "Results: " + count;
   for (const monster of monsterList) {
     const listItem = document.createElement('div');
     listItem.className = "searchResultsUnit";

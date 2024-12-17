@@ -483,6 +483,11 @@ h1.themeDisplay {
   height: auto;
 }
 
+.statblock-import-area{
+  width: 80%;
+  height: 10rem;
+}
+
 .draggable {
   position: absolute;
   width: 560px;

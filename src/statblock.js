@@ -543,7 +543,7 @@
     } else {
       str +=`
       <h1>${sb.name} <i class="fa-solid fa-arrow-up-right-from-square icon" onclick="PopoutSB(event)"></i></h1>
-      <span class="icon text" onclick="EditCurrentStatBlock()"><i class="fa-solid fa-pen-to-square icon"></i> Edit Statblock</span>`
+      <span class="icon text" onclick="EditCurrentStatBlock()"><i class="fa-solid fa-pen-to-square icon"></i> Edit Statblock</span>  <span class="icon text tooltip" onclick="ExportCurrentStatBlock()"><span class="tooltiptext">Copy to Clipboard</span><i class="fa-solid fa-file-export icon"></i>Export Statblock<span id="ExportCurrentStatblockSuccess"></span></span>`
       // See if monster already exists in initiative
       let arrIndex = units.findIndex(unit => unit.id === sb.id);
       
@@ -995,6 +995,14 @@
     RenderEditableStatBlock(currentStatBlock);
   }
 
+  /**
+   * Copies JSON text of current statblock to clipboard
+   */
+  function ExportCurrentStatBlock() {
+    navigator.clipboard.writeText(JSON.stringify(currentStatBlock));
+    document.getElementById("ExportCurrentStatblockSuccess").innerHTML = " Copied!";
+  }
+
 
   /**
    * Creates a deep copy of the selected unit (based on index) and sets the currentStatBlock
@@ -1019,6 +1027,7 @@
   function SaveCurrentStatBlock() {
     let copiedSB = JSON.parse(JSON.stringify(currentStatBlock));
 
+    SaveCurrentStatblockToStorage();
     // If the statblock doesn't exist in the unit list, display edited statblock and exit early
     // (this would be done if editing a predefined statblock)
     let arrIndex = units.findIndex(unit => unit.id === copiedSB.id);

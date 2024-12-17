@@ -156,7 +156,8 @@ function DisplayUnits() {
   // Handle XP calculation and display
   var dividedXP = Math.floor(currentExp/numPCs);
   if (Number.isNaN(dividedXP)) dividedXP = 0;
-  tableFooter.innerHTML = `Total XP Available: <b>${maxExp}</b> Earned XP: <b>${currentExp}</b> Earned XP Divided Per PC: <b>${dividedXP}</b>`;
+  tableFooter.innerHTML = `Total XP Available: <b>${maxExp}</b> Earned XP: <b>${currentExp}</b> Earned XP Divided Per PC: <b>${dividedXP}</b><br><br>
+        <button type="button" onclick="SaveGame()">Save</button><button type="button" onclick="LoadGame()">Load</button><button type="button" onclick="ResetGame()">New</button>`;
   objectListDiv.appendChild(tableFooter);
   objectListDiv.appendChild(orangeBorderBottom);
 

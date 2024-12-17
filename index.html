@@ -4,6 +4,7 @@
   <title>Combat Companion - D&amp;D Initiative Tracker</title>
   <link rel="stylesheet" href="style/main.css">
   <link rel="stylesheet" href="style/statblock.css">
+  <link rel="stylesheet" href="style/tooltip.css">
   <!--<link rel="stylesheet" href="style/multiselect.css">-->
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 </head>
@@ -20,7 +21,7 @@
     <!-- Lower container block containing search and unit display -->
     <div class="divBlocks">
       <!-- Add unit buttons -->
-      <button onclick="AddQuickUnit()">Quick Add Unit</button><button onclick="AddBasicUnit()">Add Unit</button>
+      <button onclick="AddQuickUnit()"><i class="fa-solid fa-user-plus icon"></i> Quick Add Unit</button><button onclick="AddBasicUnit()"><i class="fa-solid fa-square-plus icon"></i> Add Unit</button><button onclick="ImportStatBlockPopup()"><i class="fa-solid fa-file-export icon"></i> Import Statblock</button>
       
       <!-- Column display of search block and unit display -->
       <div class="flex-container">
@@ -40,6 +41,7 @@
               <option value="6">CR 6</option>
             </select>
             <br><br>-->
+            <div id="searchCustomStatblocksInfo" style="display:none"><u id="searchCustomStatblocksCount"></u><br>Include Custom Statblocks In Search: <input checked="checked" type="checkbox" id="checkbox-include-custom-statblocks" onclick="IncludeCustomStatBlocksInSearch()"></div>
             <div class="relativeContainer">
               <input type="text" class="searchBar" id="monsterName" name="monsterName" maxlength="30" placeholder="Search any Open5E Monsters" required autocomplete="on">
 
@@ -60,12 +62,7 @@
           <div id="unitZone"></div>
           <div id="statblockZone"></div>
         </div>
-      </div>
-
-      <!-- Save/load buttons -->
-      <button type="button" onclick="SaveGame()">Save Current Combat</button><button type="button" onclick="LoadGame()">Load Last Saved Combat</button><button type="button" onclick="ResetGame()">New Combat</button>
-    
-
+      </div>   
     </div>
 
 

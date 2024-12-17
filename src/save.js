@@ -22,7 +22,39 @@
   
       localStorage.setItem("CombatCompanionSave", JSON.stringify(saveFile));
   }
+
+  /**
+   * Saves the current statblock to local storage and custom statblocks array
+   */
+  function SaveCurrentStatblockToStorage() {
+    currentStatBlock.slug = `${currentStatBlock.name}-custom`;
+    currentStatBlock.document__slug = "Custom";
+    currentStatBlock.document__title = "User Defined Statblock";
+    currentStatBlock.document__license_url = "http://open5e.com/legal";
+    currentStatBlock.document__url = "https://combat-companion.nexodus.net";
+
+    // If the statblock doesn't exist in the unit list, display edited statblock and exit early
+    // (this would be done if editing a predefined statblock)
+    if (customStatblocks.length > 0) {
+      let arrIndex = customStatblocks.findIndex(unit => unit.id === currentStatBlock.id);
+      if (arrIndex < 0) { // Statblock doesn't exist in list, add new statblock
+        customStatblocks.push(currentStatBlock);
+      } else {
+        customStatblocks[arrIndex] = currentStatBlock;
+      }
+    } else { // Statblock does exist with same ID. Overwrite
+      customStatblocks.push(currentStatBlock);
+    }
+
+    if (customStatblocks.length > 0) {
+      document.getElementById("searchCustomStatblocksInfo").style.display = "block";
+      document.getElementById("searchCustomStatblocksCount").innerHTML = customStatblocks.length + "User-Defined Statblocks Exist";
+    }
+
+    localStorage.setItem("CombatCompanionSavedStatblocks", JSON.stringify(customStatblocks));
+  }
   
+
 
   /**
    * Loads the last saved combat from local storage
@@ -45,8 +77,38 @@
 
 
   /**
+   * Restores saved statblocks from local storage
+   */
+  function LoadSavedStatblocks() {
+    var savedBlocks = JSON.parse(localStorage.getItem("CombatCompanionSavedStatblocks"));
+    if (savedBlocks != null) {
+      customStatblocks = savedBlocks
+    }
+    if (customStatblocks.length > 0) {
+      document.getElementById("searchCustomStatblocksInfo").style.display = "block";
+      document.getElementById("searchCustomStatblocksCount").innerHTML = customStatblocks.length + " User-Defined Statblocks Exist";
+    }
+
+  }
+
+
+  /**
    * Deletes all stored data
    */
-  function ClearLocalStorage() {
+  function ClearLocalStorageAll() {
     localStorage.clear();
   }
+
+  /**
+   * Deletes all savegame stored data
+   */
+  function ClearLocalStorageSavegame() {
+    localStorage.removeItem("CombatCompanionSave");
+  }
+
+    /**
+   * Deletes all statblocks stored data
+   */
+    function ClearLocalStorageStatblocks() {
+      localStorage.clear("CombatCompanionSavedStatblocks");
+    }
