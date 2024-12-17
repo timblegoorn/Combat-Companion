@@ -173,7 +173,7 @@ function RenderUnit(id) {
           statusEffects += `<span class="icon text" onclick="AddStatusEffect('${sb.id}')"><i class="fa-solid fa-plus icon"></i> Add Effect</span>`
     
           if (sb.control_type == "PC" && sb.current_hit_points == 0) {
-            statusEffects = `<div class="statusEffect">Unconscious</div>`
+            statusEffects = `<div class="statusEffect unconscious">Unconscious</div>`
           }
         }
       str += statusEffects;

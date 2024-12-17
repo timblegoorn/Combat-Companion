@@ -375,14 +375,16 @@
                 <p><span class="statblockTextInput" id="statblockLegendaryDescription-legendary_desc" contenteditable="true">${sb.legendary_desc}</span></p>
               </div> <!-- property block -->`;
         }
-        for (var i = 0; i < sb.legendary_actions.length; i++) {
-          var action = sb.legendary_actions[i];
-          str+= `
-          <div class="property-block spanOnce">
-            <h4><span class="statblockTextInput" id="statblockLegendaryActionName-${i}" contenteditable="true">${action.name}</span> </h4>
-            <i class="fa-solid fa-x solidIcon" onclick="sbRemoveLegendaryAction('${i}')"></i><br>
-            <p><span class="statblockTextInput" id="statblockLegendaryActionDesc-${i}" contenteditable="true">${action.desc}</span></p>
-          </div> <!-- property block -->`;
+        if (sb.legendary_actions != null) {
+          for (var i = 0; i < sb.legendary_actions.length; i++) {
+            var action = sb.legendary_actions[i];
+            str+= `
+            <div class="property-block spanOnce">
+              <h4><span class="statblockTextInput" id="statblockLegendaryActionName-${i}" contenteditable="true">${action.name}</span> </h4>
+              <i class="fa-solid fa-x solidIcon" onclick="sbRemoveLegendaryAction('${i}')"></i><br>
+              <p><span class="statblockTextInput" id="statblockLegendaryActionDesc-${i}" contenteditable="true">${action.desc}</span></p>
+            </div> <!-- property block -->`;
+          }
         }
         str += `<br><span class="icon text" onclick="sbAddLegendaryAction()"><i class="fa-solid fa-plus solidIcon" onclick="sbAddLegendaryAction()"></i> Add Legendary Action</span>`;
         str += `
@@ -1046,12 +1048,14 @@
       if (currentStatBlock.dexterity != undefined) initiative += parseInt(abilityModifierTable[currentStatBlock.dexterity]);
     } else var initiative = document.getElementById("statblock-initiative").value
 
+    //currentStatBlock.initiative = initiative;
+
     if (currentStatBlock.current_hit_points == undefined) currentStatBlock.current_hit_points = currentStatBlock.hit_points;
     if (currentStatBlock.control_type == undefined) currentStatBlock.control_type = "Enemy";
 
     let copiedSB = JSON.parse(JSON.stringify(currentStatBlock));
     copiedSB.initiative = initiative;
-    if (copiedSB.id == undefined) copiedSB.id = crypto.randomUUID();
+    copiedSB.id = crypto.randomUUID();
     console.log(copiedSB.id)
     units.push(copiedSB);
     DisplayUnits();

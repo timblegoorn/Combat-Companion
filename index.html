@@ -4,6 +4,7 @@
   <title>Combat Companion - D&amp;D Initiative Tracker</title>
   <link rel="stylesheet" href="style/main.css">
   <link rel="stylesheet" href="style/statblock.css">
+  <!--<link rel="stylesheet" href="style/multiselect.css">-->
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 </head>
 <body>
@@ -27,6 +28,18 @@
 
         <div class="divInlineBlocks" id="searchContainer">
           <form onsubmit="return false">
+            <!--<select multiple data-placeholder="Filter CR">
+              <option value="1/8">CR 1/8</option>
+              <option value="1/4">CR 1/4</option>
+              <option value="1/2">CR 1/2</option>
+              <option value="1">CR 1</option>
+              <option value="2">CR 2</option>
+              <option value="3">CR 3</option>
+              <option value="4">CR 4</option>
+              <option value="5">CR 5</option>
+              <option value="6">CR 6</option>
+            </select>
+            <br><br>-->
             <div class="relativeContainer">
               <input type="text" class="searchBar" id="monsterName" name="monsterName" maxlength="30" placeholder="Search any Open5E Monsters" required autocomplete="on">
 
@@ -82,6 +95,7 @@
   <script src="src/quickview.js"></script>
   <script src="src/popup.js"></script>
   <script src="src/listeners.js"></script>
+  <!--<script src="src/multiselect.js"></script>-->
   <script src="https://kit.fontawesome.com/b54a634fde.js" crossorigin="anonymous"></script>
 </body>
 </html>

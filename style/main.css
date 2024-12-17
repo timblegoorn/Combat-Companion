@@ -94,7 +94,7 @@ a:hover {
 
 #searchContainer {
   width: 30%;
-  min-width: 250px;
+  min-width: 300px;
   min-height: 300px;
   height: 40vh;
   padding: 0px;
@@ -107,7 +107,6 @@ a:hover {
   padding: 0px;
   text-align: center;
   min-height: 300px;
-  height: 40vh;
 }
 
 #unitDisplay {
@@ -204,7 +203,7 @@ a:hover {
 }
 
 #searchResults {
-  height: calc(100% - 50px);
+  height: 90%;
   overflow-y: auto;
   background-color: #FDF1DC;
   border-left: 1px solid black;
@@ -371,8 +370,8 @@ td {
 
 .number-input input[type=number] {
   font-family: sans-serif;
-  max-width: 3rem;
-  padding: .5rem;
+  max-width: 2rem;
+  padding: .25rem;
   border: solid #ddd;
   border-width: 0 1px;
   font-size: 13.5px;
@@ -454,6 +453,11 @@ h1.themeDisplay {
   display: inline-block;
   margin-right: 5px;
   padding: 0px 3px;
+}
+
+.statusEffect.unconscious {
+  background-color: #f53628;
+  color: white;
 }
 
 .quickInfoContainer {

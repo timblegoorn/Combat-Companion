@@ -80,9 +80,14 @@ function DisplayUnits() {
         </div>
         /${unit[columnTitleSlugs[i]]}
         `
-      } else if (currentTurn == j && columnTitles[i] == "Initiative") {
-        dataVal = `<i class="fa-solid fa-chevron-right"></i> `;
-        dataVal += unit[columnTitleSlugs[i]];
+      } else if (columnTitles[i] == "Initiative") {
+        if (currentTurn == j) {
+          dataVal = `<i class="fa-solid fa-chevron-right"></i>`;
+        } else dataVal = "";
+          dataVal += `
+       <div class="number-input">
+        <input type="number" min="0" max="40" class="number-input number-input" id="selected-${j}-initiative" name="selected-initiative" value="${unit.initiative}">
+      </div>`
       } else if (columnTitles[i] == "Actions") {
         dataVal = `<i class="fa-regular fa-copy icon" onclick="CopyUnit('${unit.id}')"></i>   
                    <i class="fa-regular fa-x icon" onclick="DeleteUnit('${unit.id}')"></i>`;
@@ -121,7 +126,7 @@ function DisplayUnits() {
           dataVal += `<span class="icon text" onclick="AddStatusEffect('${unit.id}')"><i class="fa-solid fa-plus icon"></i> Add Effect</span>`
 
           if (unit.control_type == "PC" && unit.current_hit_points == 0) {
-            dataVal = `<div class="statusEffect">Unconscious</div>`
+            dataVal = `<div class="statusEffect unconscious">Unconscious</div>`
           }
         }
       }
@@ -224,6 +229,15 @@ function HandleTableQuickEdit(e) {
       if (editContent <= 0) editContent = 0;
       if (editContent > units[index].hit_points) editContent = units[index].hit_points;
     }
+
+    units[index][key] = parseInt(editContent);
+    DisplayUnits();
+    if (currentStatBlock.id == units[index].id) {
+        UpdateCurrentStatblock(units[index].id)
+    }
+  } else if (elementID.includes("initiative")) {
+    if (editContent <= 0) editContent = 0;
+    else if (editContent > 40) editContent = 40;
 
     units[index][key] = parseInt(editContent);
     DisplayUnits();

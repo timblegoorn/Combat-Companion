@@ -36,6 +36,7 @@ function PopoutSB(e) {
 
 
     document.getElementById(draggableWindow.id).addEventListener("mousedown", startDrag);
+    
     return draggableWindow.id;
   }
 
@@ -110,4 +111,15 @@ function PopoutSB(e) {
         document.getElementById(draggingID).style.left = newLeft + "px";
       }
     };
+  }
+
+
+
+  function expandDropdown() {
+    console.log(document.getElementById("CR_Select").style.height)
+    if (document.getElementById("CR_Select").style.height=="60px") {
+      document.getElementById("CR_Select").style.height="20px"
+    } else {
+      document.getElementById("CR_Select").style.height="60px";
+    }
   }
