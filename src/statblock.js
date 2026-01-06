@@ -670,7 +670,7 @@
         }
 
         // Damage vulnerability
-        if (sb.damage_vulnerabilities.length > 0) {
+        if (sb.damage_vulnerabilities != null && sb.damage_vulnerabilities.length > 0) {
           str+= `
           <div class="property-line firstCap">
             <h4>Damage Vulnerabilities </h4>
@@ -679,7 +679,7 @@
         }
 
         // Damage resistance
-        if (sb.damage_resistances.length > 0) {
+        if (sb.damage_resistances != null && sb.damage_resistances.length > 0) {
           str+= `
           <div class="property-line firstCap">
             <h4>Damage Resistances </h4>
@@ -688,7 +688,7 @@
         }
 
         // Damage immunity
-        if (sb.damage_immunities.length > 0) {
+        if (sb.damage_immunities != null && sb.damage_immunities.length > 0) {
           str+= `
           <div class="property-line firstCap">
             <h4>Damage Immunities </h4>
@@ -697,7 +697,7 @@
         }
 
         // Condition immunity
-        if (sb.condition_immunities.length > 0) {
+        if (sb.condition_immunities != null && sb.condition_immunities.length > 0) {
           str+= `
           <div class="property-line firstCap">
             <h4>Condition Immunities </h4>
@@ -706,7 +706,7 @@
         }
 
         // Senses
-        if (sb.senses.length > 0) {
+        if (sb.senses != null && sb.senses.length > 0) {
           str+= `
           <div class="property-line firstCap">
             <h4>Senses </h4>
@@ -776,9 +776,13 @@
         str += `
           <div class="actions">
             <h3>Legendary Actions</h3>
-            <div class="property-block spanOnce">
-              <p>${sb.legendary_desc}</p>
-            </div> <!-- property block -->`;
+            `;
+        if (sb.legendary_desc != null) {
+                  str += `
+                  <div class="property-block spanOnce">
+                    <p>${sb.legendary_desc}</p>
+                  </div> <!-- property block -->`;
+        }
         for (let action of sb.legendary_actions) {
           str+= `
           <div class="property-block spanOnce">
