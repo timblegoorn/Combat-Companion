@@ -173,7 +173,10 @@
           <div class="property-line firstCap">
             <h4>Skills </h4>
             <p>`
-        var numSkills = Object.keys(sb.skills).length;
+		var numSkills = 0;
+		if (sb.skills != undefined) {
+			numSkills = Object.keys(sb.skills).length;
+		}
         var i = 0;
         for (const skill in sb.skills) {
           str += `
@@ -326,6 +329,7 @@
         </div> <!-- top stats -->`;
   
         // Special Abilities
+	if (sb.special_abilities != undefined) {
         for (var i = 0; i < sb.special_abilities.length; i++) {
           var specialAbility = sb.special_abilities[i];
           str+= `
@@ -335,6 +339,7 @@
           </div> <!-- property block -->`;
           str += ` `;
         }
+	}
         str += `<br><span class="icon text" onclick="sbAddSA()"><i class="fa-solid fa-plus solidIcon" onclick="sbAddSA()"></i> Add Special Ability</span>`;
         str += `<br><span class="icon text" onclick="sbAddSASpell()"><i class="fa-solid fa-plus solidIcon" onclick="sbAddSASpell()"></i> Add Spellcasting</span>`;
         str+= `
@@ -656,7 +661,10 @@
         }
 
         // Skill bonuses
-        var skillsKeys = Object.keys(sb.skills);
+		var skillsKeys = 0;
+		if (sb.skills != undefined) {
+			skillsKeys = Object.keys(sb.skills);
+		}
         if (skillsKeys.length > 0) {
           str+= `
           <div class="property-line firstCap">
